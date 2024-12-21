@@ -2,10 +2,14 @@ package hello.board.service.post;
 
 import hello.board.domain.post.*;
 import hello.board.domain.user.User;
+import hello.board.repository.LikeRepository;
 import hello.board.repository.PostQueryRepository;
 import hello.board.repository.PostRepository;
+import hello.board.repository.PostStatisticsRepository;
 import hello.board.service.EntityFinder;
 import hello.board.service.image.ImageService;
+import hello.board.service.post.poststatistics.ViewService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,24 +29,36 @@ public class PostService {
     private final ImageService imageService;
     private final EntityFinder entityFinder;
     private final PostQueryRepository postQueryRepository;
+    private final PostStatisticsRepository postStatisticsRepository;
+    private final LikeRepository likeRepository;
+    private final ViewService viewService;
 
     @Transactional
     public Long savePost(PostForm form, List<MultipartFile> imageFiles, String loginId) {
         User loginUser = entityFinder.getLoginUser(loginId);
 
         Post post = form.toEntity(loginUser);
+        Post savedPost = postRepository.save(post);
 
         if (imageFiles != null && !imageFiles.isEmpty()) {
             saveImagesToPost(imageFiles, post);
         }
 
-        Post savedPost = postRepository.save(post);
+        createPostStatistics(savedPost.getId());
+
         return savedPost.getId();
     }
-    public PostDetailDto findByPostId(Long postId) {
+
+    public PostDetailDto findByPostId(Long postId, HttpServletRequest request) {
         Post post = entityFinder.getPost(postId);
 
-        return PostDetailDto.of(post);
+        viewService.handleView(postId, request);
+
+        Long likeCount = likeRepository.countByPostId(postId);
+        Integer viewCount = viewService.getViewCount(postId);
+
+        return PostDetailDto.of(post, viewCount,likeCount.intValue());
+
     }
 
     public PostForm findPostForm(Long postId) {
@@ -76,10 +92,18 @@ public class PostService {
         postRepository.delete(post);
     }
 
+
     public Page<MainPostDto> searchPosts(PostSearch search, Pageable page){
         return postQueryRepository.searchPosts(search, page);
     }
 
+    private void createPostStatistics(Long postId) {
+        PostStatistics statistics = PostStatistics.builder()
+                .postId(String.valueOf(postId))
+                .viewCount(0)
+                .build();
+        postStatisticsRepository.save(statistics);
+    }
 
     private void saveImagesToPost(List<MultipartFile> imageFiles, Post post) {
         for (MultipartFile file : imageFiles) {
