@@ -37,9 +37,9 @@ class CommentServiceTest {
     void checkAuthorization() throws Exception {
         //given
         UserForm userForm = new UserForm();
-        userForm.setUsername("test");
-        userForm.setNickname("tester");
-        userForm.setPassword("password123");
+        userForm.setUsername("testUser");
+        userForm.setNickname("nickname");
+        userForm.setPassword("password");
         Long userId = userService.saveUser(userForm);
 
         PostForm postForm = new PostForm();
