@@ -30,10 +30,6 @@ public class UserService {
     @Transactional
     public Long saveUser(UserForm form) {
 
-        if (userRepository.existsByUsername(form.getUsername())) {
-            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
-        }
-
         String encodedPassword = bCryptPasswordEncoder.encode(form.getPassword());
         User savedUser = form.toEntity(encodedPassword);
 
@@ -51,6 +47,14 @@ public class UserService {
         return new UserPostsAndCommentsDto(posts, comments);
     }
 
+    public boolean isUsernameDuplicate(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean isNicknameDuplicate(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
     private List<MyPagePostDto> getMyPagePostDto(User user) {
         return postRepository.findByUserOrderByCreateDateTimeDesc(user).stream()
                 .map(MyPagePostDto::of)
@@ -62,4 +66,5 @@ public class UserService {
                 .map(CommentDto::of)
                 .toList();
     }
+
 }
