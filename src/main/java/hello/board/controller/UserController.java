@@ -3,8 +3,8 @@ package hello.board.controller;
 import hello.board.domain.message.MessageDto;
 import hello.board.domain.user.UserForm;
 import hello.board.domain.user.UserPostsAndCommentsDto;
-import hello.board.service.MessageService;
-import hello.board.service.UserService;
+import hello.board.service.message.MessageService;
+import hello.board.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,20 +35,27 @@ public class UserController {
     }
 
     @GetMapping("/signup")
-    public String signupForm() {
+    public String signupForm(Model model) {
+        model.addAttribute("form", new UserForm());
         return "users/signup";
     }
 
     @PostMapping("/signup")
-    public String signup(@Validated @ModelAttribute("form") UserForm form, Model model) {
-        try {
-            userService.saveUser(form);
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+    public String signup(@Validated @ModelAttribute("form") UserForm form,BindingResult result, Model model) {
+        if (result.hasErrors()) {
             return "users/signup";
         }
+
+        // 중복 확인
+        duplicateUser(form, result);
+
+        if (result.hasErrors()) {
+            return "users/signup"; // 중복 오류 발생 시 다시 폼 페이지로 이동
+        }
+
         return "redirect:/login";
     }
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
@@ -71,5 +78,14 @@ public class UserController {
         model.addAttribute("sentMessages", sentMessages);
 
         return "users/mypage";
+    }
+
+    private void duplicateUser(UserForm form, BindingResult result) {
+        if (userService.isUsernameDuplicate(form.getUsername())) {
+            result.rejectValue("username", "duplicate", "이미 존재하는 아이디입니다.");
+        }
+        if (userService.isNicknameDuplicate(form.getNickname())) {
+            result.rejectValue("nickname", "duplicate", "이미 존재하는 닉네임입니다.");
+        }
     }
 }
