@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 public class UserPostsAndCommentsDto {
 
-    private List<MyPagePostDto> posts;
-    private List<CommentDto> comments;
+    private final List<MyPagePostDto> posts;
+    private final List<CommentDto> comments;
 
     public UserPostsAndCommentsDto(List<MyPagePostDto> posts, List<CommentDto> comments) {
         this.posts = posts;
