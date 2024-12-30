@@ -91,6 +91,7 @@ public class CommentService {
         if (!parent.getChildren().isEmpty()) {
             return;
         }
+
         // 위 두 조건을 모두 만족하면 부모도 물리 삭제
         commentRepository.delete(parent);
 
