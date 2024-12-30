@@ -21,14 +21,13 @@ public class MessageService {
     private final EntityFinder entityFinder;
 
     @Transactional
-    public Long sendMessage(String senderUsername, MessageForm form) {
+    public void sendMessage(String senderUsername, MessageForm form) {
         User sender = entityFinder.getLoginUser(senderUsername);
         User receiver = entityFinder.getLoginUser(form.getReceiverUsername());
 
         Message message = form.toEntity(sender, receiver);
 
         messageRepository.save(message);
-        return message.getId();
     }
 
     public List<MessageDto> getReceivedMessages(String username) {

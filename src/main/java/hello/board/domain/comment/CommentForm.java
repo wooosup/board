@@ -14,12 +14,14 @@ public class CommentForm {
     private String content;
 
     private Long postId;
+    private Long parentId;
 
-    public Comment toEntity(User user, Post post) {
+    public Comment toEntity(User user, Post post, Comment parent) {
         return Comment.builder()
                 .content(this.content)
                 .user(user)
                 .post(post)
+                .parent(parent)
                 .build();
     }
 }

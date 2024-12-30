@@ -43,12 +43,6 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="form-container">
-                <!-- 게시글 작성 폼 위에 플래시 메시지 추가 -->
-                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                    <p th:text="${successMessage}"></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="닫기"></button>
-                </div>
-                <h2 class="form-title">새 게시글 작성</h2>
                 <form th:action="@{/post/create}" th:object="${form}" method="post" enctype="multipart/form-data">
                     <!-- 제목 입력 필드 -->
                     <div class="mb-4">

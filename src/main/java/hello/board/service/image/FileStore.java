@@ -1,4 +1,4 @@
-package hello.board.service;
+package hello.board.service.image;
 
 import org.springframework.web.multipart.MultipartFile;
 

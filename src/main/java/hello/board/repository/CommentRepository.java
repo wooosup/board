@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-
-    List<Comment> findByUserOrderByCommentDateDesc(User user);
+    List<Comment> findByUserOrderByCreateDateTimeDesc(User user);
 }

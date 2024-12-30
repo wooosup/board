@@ -1,4 +1,4 @@
-package hello.board.service;
+package hello.board.service.image;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -40,9 +40,10 @@ public class LocalFileStore implements FileStore {
         String fullPath = Paths.get(uploadDir, filePath).toString();
         File file = new File(fullPath);
         if (file.exists()) {
-            if (!file.delete()) {
-                throw new IOException("파일 삭제에 실패했습니다: " + fullPath);
+            if (file.delete()) {
+                return;
             }
+            throw new IOException("파일 삭제에 실패했습니다: " + fullPath);
         }
     }
 

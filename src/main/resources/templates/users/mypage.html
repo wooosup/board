@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>마이페이지</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      color: #343a40;
+    }
+    .list-group-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 40px;
+    }
+    .post-link, .comment-link {
+      font-weight: bold;
+      color: #007bff;
+      text-decoration: none;
+    }
+    .post-link:hover, .comment-link:hover {
+      text-decoration: underline;
+    }
+    .text-muted {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    .empty-item {
+      text-align: center;
+      color: #adb5bd;
+      font-size: 0.9rem;
+      background-color: #f8f9fa;
+      border: 1px dashed #dee2e6;
+      border-radius: 5px;
+      padding: 10px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <a th:href="@{/}" class="btn btn-secondary mb-4">홈으로 돌아가기</a>
+  <h2 class="mb-3">작성한 글</h2>
+  <ul class="list-group mb-4">
+    <li th:each="post : ${posts}" class="list-group-item">
+      <div>
+        <a th:href="@{'/post/' + ${post.id}}" th:text="${post.title}" class="post-link">게시글 제목</a>
+      </div>
+      <span class="text-muted" th:text="${#temporals.format(post.createdDateTime, 'yyyy-MM-dd HH:mm')}">작성일</span>
+    </li>
+    <li th:if="${posts.size() == 0}" class="list-group-item empty-item">작성한 글이 없습니다.</li>
+  </ul>
+
+  <h2 class="mb-3">작성한 댓글</h2>
+  <ul class="list-group mb-4">
+    <li th:each="comment : ${comments}" class="list-group-item">
+      <div>
+        <a th:href="@{'/post/' + ${comment.postId}}" th:text="${comment.content}" class="comment-link">댓글 내용</a>
+      </div>
+      <span class="text-muted" th:text="${#temporals.format(comment.createdDateTime, 'yyyy-MM-dd HH:mm')}">작성일</span>
+    </li>
+    <li th:if="${comments.size() == 0}" class="list-group-item empty-item">작성한 댓글이 없습니다.</li>
+  </ul>
+
+  <h2 class="mb-3">받은 쪽지</h2>
+  <ul class="list-group mb-4">
+    <li th:each="message : ${receivedMessages}" class="list-group-item">
+      <div>
+        <span th:text="${message.senderNickname}">보낸 사람</span> -
+        <a href="#"
+           th:text="${message.content.length() > 30} ? ${#strings.substring(message.content, 0, 30)} + '...' : ${message.content}"
+           class="link"
+           data-toggle="modal"
+           data-target="#messageModal"
+           th:attr="onclick=|showMessage('${message.id}')|">쪽지 내용</a>
+      </div>
+      <span class="text-muted" th:text="${#temporals.format(message.sentTime, 'yyyy-MM-dd HH:mm')}">보낸 시간</span>
+    </li>
+    <li th:if="${receivedMessages.size() == 0}" class="list-group-item empty-item">받은 쪽지가 없습니다.</li>
+  </ul>
+  <h2 class="mb-3">보낸 쪽지</h2>
+  <ul class="list-group mb-4">
+    <li th:each="message : ${sentMessages}" class="list-group-item">
+      <div>
+        <span th:text="${message.receiverNickname}">받는 사람</span> -
+        <a href="#"
+           th:text="${message.content.length() > 30} ? ${#strings.substring(message.content, 0, 30)} + '...' : ${message.content}"
+           class="link"
+           data-toggle="modal"
+           data-target="#messageModal"
+           th:attr="onclick=|showMessage('${message.id}')|">쪽지 내용</a>
+      </div>
+      <span class="text-muted" th:text="${#temporals.format(message.sentTime, 'yyyy-MM-dd HH:mm')}">보낸 시간</span>
+    </li>
+    <li th:if="${sentMessages.size() == 0}" class="list-group-item empty-item">보낸 쪽지가 없습니다.</li>
+  </ul>
+
+  <form th:action="@{/messages/deleteAll}" method="post" style="margin-top: 20px;">
+    <button type="submit" class="btn btn-danger">쪽지 비우기</button>
+  </form>
+  <!-- 부트스트랩 모달 -->
+  <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="messageModalLabel">쪽지 내용</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- 전체 쪽지 내용을 Ajax를 통해 동적으로 로드 -->
+          <p id="fullMessageContent"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // 메시지 내용을 동적으로 로드하여 모달에 표시
+  function showMessage(messageId) {
+    console.log("Fetching message with ID:", messageId); // 디버깅용
+    $.ajax({
+      url: '/messages/' + messageId,  // 전체 쪽지 내용을 가져오는 엔드포인트
+      method: 'GET',
+      success: function(data) {
+        console.log("Received data:", data);  // 응답 데이터 디버깅용
+        $('#fullMessageContent').text(data.content);  // 모달에 전체 내용 표시
+        $('#messageModal').modal('show');  // 모달 표시
+      },
+      error: function() {
+        $('#fullMessageContent').text('쪽지 내용을 불러오는 데 실패했습니다.');
+      }
+    });
+  }
+
+</script>
+</body>
+</html>

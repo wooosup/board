@@ -1,5 +1,6 @@
-package hello.board.service;
+package hello.board.service.user;
 
+import hello.board.service.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

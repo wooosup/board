@@ -5,10 +5,8 @@
     <title>게시글 수정</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 커스텀 CSS (선택 사항) -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
-        /* 추가적인 커스텀 스타일링 */
         body {
             background-color: #f8f9fa;
         }
@@ -22,10 +20,7 @@
             margin-bottom: 20px;
             color: #343a40;
         }
-        .btn-submit {
-            width: 100px;
-        }
-        .btn-cancel {
+        .btn-submit, .btn-cancel {
             width: 100px;
         }
         .image-preview {
@@ -36,12 +31,8 @@
             margin-right: 10px;
             margin-bottom: 10px;
         }
-        .existing-images {
-            margin-bottom: 20px;
-        }
-        .existing-images img {
-            max-width: 150px;
-            margin-right: 10px;
+        .delete-checkbox {
+            margin-left: 5px;
             margin-bottom: 10px;
         }
     </style>
@@ -51,14 +42,12 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="form-container">
-                <h2 class="form-title">게시글 수정</h2>
                 <form th:action="@{'/post/edit/' + ${postId}}" th:object="${form}" method="post" enctype="multipart/form-data">
                     <!-- 제목 입력 필드 -->
                     <div class="mb-4">
                         <label for="title" class="form-label">제목</label>
                         <input type="text" id="title" th:field="*{title}" class="form-control"
                                placeholder="제목을 입력하세요" required autofocus>
-                        <!-- 제목 에러 메시지 -->
                         <div th:if="${#fields.hasErrors('title')}" class="text-danger mt-1" th:errors="*{title}"></div>
                     </div>
                     <!-- 내용 입력 필드 -->
@@ -66,19 +55,31 @@
                         <label for="content" class="form-label">내용</label>
                         <textarea id="content" th:field="*{content}" class="form-control" rows="6"
                                   placeholder="내용을 입력하세요" required></textarea>
-                        <!-- 내용 에러 메시지 -->
                         <div th:if="${#fields.hasErrors('content')}" class="text-danger mt-1" th:errors="*{content}"></div>
+                    </div>
+                    <!-- 기존 이미지 미리보기 및 삭제 체크박스 -->
+                    <div class="mb-4">
+                        <label class="form-label">기존 이미지</label>
+                        <div class="image-preview" id="existingImagePreview">
+                            <div th:each="image : ${form.existingImages}">
+                                <img th:src="@{${image.imgUrl}}" class="img-thumbnail">
+                                <label class="delete-checkbox">
+                                    <input type="checkbox" name="imageIdsToDelete" th:value="${image.id}">
+                                    삭제
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <!-- 이미지 업로드 필드 -->
                     <div class="mb-4">
-                        <label for="images" class="form-label">이미지 업로드</label>
+                        <label for="images" class="form-label">새 이미지 업로드</label>
                         <input type="file" id="images" name="images" multiple class="form-control">
                         <div class="image-preview" id="imagePreview"></div>
                     </div>
                     <!-- 제출 및 취소 버튼 -->
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary btn-submit me-2">수정</button>
-                        <a th:href="@{'/post/' + ${postId}}" class="btn btn-secondary btn-cancel">취소</a>
+                        <button type="submit" class="btn btn-success btn-submit me-2">수정</button>
+                        <a th:href="@{/}" class="btn btn-secondary btn-cancel">취소</a>
                     </div>
                 </form>
             </div>

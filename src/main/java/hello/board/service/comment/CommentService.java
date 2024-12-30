@@ -25,7 +25,16 @@ public class CommentService {
         User loginUser = entityFinder.getLoginUser(loginId);
         Post post = entityFinder.getPost(form.getPostId());
 
-        Comment comment = form.toEntity(loginUser, post);
+        Comment parent = null;
+        if (form.getParentId() != null) {
+            parent = entityFinder.getComment(form.getParentId());
+        }
+
+        Comment comment = form.toEntity(loginUser, post, parent);
+
+        if (parent != null) {
+            parent.getChildren().add(comment);
+        }
 
         commentRepository.save(comment);
         return comment.getId();
@@ -43,21 +52,57 @@ public class CommentService {
         User user = entityFinder.getLoginUser(username);
 
         checkAuthorization(comment, user);
-
         comment.updateComment(content);
     }
 
-    public void deleteComment(Long id, String loginId) {
-        Comment findComment = entityFinder.getComment(id);
+    public void deleteComment(Long commentId, String loginId) {
+        Comment findComment = entityFinder.getComment(commentId);
         User user = entityFinder.getLoginUser(loginId);
 
         checkAuthorization(findComment, user);
 
-        commentRepository.delete(findComment);
+        if (findComment.getParent() == null) {
+            // 최상위 댓글인 경우 -> 소프트 삭제
+            findComment.markAsDeleted();
+            // 자식이 모두 삭제되면 부모도 물리 삭제
+            removeParentIfPossible(findComment);
+        } else {
+            // 대댓글인 경우 -> 즉시 물리 삭제
+            commentRepository.delete(findComment);
+            // 부모 댓글이 "소프트 삭제 + 남은 자식 없음" 이면 부모도 삭제
+            removeParentIfPossible(findComment.getParent());
+        }
+    }
+
+    /**
+     * 상위 부모 댓글을 재귀적으로 삭제할 수 있는지 체크
+     */
+    private void removeParentIfPossible(Comment parent) {
+        if (parent == null) {
+            return;
+        }
+        
+        // 부모가 아직 소프트 삭제되지 않았다면 물리 삭제 불가
+        if (!parent.isDeleted()) {
+            return;
+        }
+
+        // 자식 댓글이 하나라도 남아 있으면 물리 삭제 불가
+        if (!parent.getChildren().isEmpty()) {
+            return;
+        }
+        // 위 두 조건을 모두 만족하면 부모도 물리 삭제
+        commentRepository.delete(parent);
+        // 재귀 검사
+        removeParentIfPossible(parent.getParent());
     }
 
     private static List<CommentDto> getCommentDto(Post post) {
-        return post.getComments().stream()
+        List<Comment> comments = post.getComments().stream()
+                .filter(c -> c.getParent() == null)
+                .toList();
+
+        return comments.stream()
                 .map(CommentDto::of)
                 .toList();
     }

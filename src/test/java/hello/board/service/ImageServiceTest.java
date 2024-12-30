@@ -2,6 +2,8 @@ package hello.board.service;
 
 import hello.board.domain.post.Image;
 import hello.board.repository.ImageRepository;
+import hello.board.service.image.FileService;
+import hello.board.service.image.ImageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,7 +31,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void saveImage_성공() throws Exception {
+    void saveImage() throws Exception {
         //given
         MockMultipartFile file = new MockMultipartFile("image", "test.jpa", "image/jpeg", "test data".getBytes());
 

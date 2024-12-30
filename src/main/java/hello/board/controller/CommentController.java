@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/post/{postId}/comment")
@@ -20,6 +19,9 @@ public class CommentController {
 
     @PostMapping("/create")
     public String createComment(@PathVariable Long postId, @Validated @ModelAttribute("commentForm") CommentForm commentForm, BindingResult result, Principal pri) {
+        if (pri == null) {
+            return "redirect:/login";
+        }
         if (result.hasErrors()) {
             return "redirect:/post/" + postId;
         }

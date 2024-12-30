@@ -29,6 +29,7 @@ public class UserService {
 
     @Transactional
     public Long saveUser(UserForm form) {
+        duplicate(form);
 
         String encodedPassword = bCryptPasswordEncoder.encode(form.getPassword());
         User savedUser = form.toEntity(encodedPassword);
@@ -47,12 +48,21 @@ public class UserService {
         return new UserPostsAndCommentsDto(posts, comments);
     }
 
+    // 입력 폼 검증
     public boolean isUsernameDuplicate(String username) {
         return userRepository.existsByUsername(username);
     }
-
     public boolean isNicknameDuplicate(String nickname) {
         return userRepository.existsByNickname(nickname);
+    }
+
+    private void duplicate(UserForm form) {
+        if (userRepository.existsByUsername(form.getUsername())) {
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        }
+        if (userRepository.existsByNickname(form.getNickname())) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
     }
 
     private List<MyPagePostDto> getMyPagePostDto(User user) {
