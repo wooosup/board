@@ -19,6 +19,7 @@ public class LikeController {
     @PostMapping("/{postId}")
     public ResponseEntity<Map<String, Object>> toggleLike(@PathVariable Long postId, Principal principal) {
         String username = principal.getName();
+
         int updatedLikeCount = likeService.likePost(postId, username);
 
         Map<String, Object> response = new HashMap<>();
