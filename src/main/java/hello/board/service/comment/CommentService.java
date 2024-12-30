@@ -93,6 +93,7 @@ public class CommentService {
         }
         // 위 두 조건을 모두 만족하면 부모도 물리 삭제
         commentRepository.delete(parent);
+
         // 재귀 검사
         removeParentIfPossible(parent.getParent());
     }
