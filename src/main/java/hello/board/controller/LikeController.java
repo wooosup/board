@@ -1,13 +1,13 @@
 package hello.board.controller;
 
+import hello.board.domain.like.LikeResponse;
 import hello.board.service.post.poststatistics.LikeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,13 +17,16 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/{postId}")
-    public ResponseEntity<Map<String, Object>> toggleLike(@PathVariable Long postId, Principal principal) {
-        String username = principal.getName();
+    public ResponseEntity<LikeResponse> toggleLike(@PathVariable Long postId, Principal pri) {
+        if (pri == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String username = pri.getName();
 
         int updatedLikeCount = likeService.likePost(postId, username);
+        LikeResponse response = new LikeResponse(updatedLikeCount);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("likeCount", updatedLikeCount);
         return ResponseEntity.ok(response);
     }
     @GetMapping("/{postId}/count")
