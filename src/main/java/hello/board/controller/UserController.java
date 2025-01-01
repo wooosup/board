@@ -17,6 +17,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -30,7 +32,11 @@ public class UserController {
     private final MessageService messageService;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(@RequestParam(value = "error", required = false) String error,
+                        Model model) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 확인 후 다시 입력해 주십시오.");
+        }
         return "users/loginForm";
     }
 
@@ -41,18 +47,20 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Validated @ModelAttribute("form") UserForm form,BindingResult result, Model model) {
+    public String signup(@Validated @ModelAttribute("form") UserForm form, BindingResult result, RedirectAttributes redirect) {
         if (result.hasErrors()) {
             return "users/signup";
         }
 
         // 중복 확인
         duplicateUser(form, result);
-
         if (result.hasErrors()) {
             return "users/signup"; // 중복 오류 발생 시 다시 폼 페이지로 이동
         }
 
+        userService.saveUser(form);
+
+        redirect.addFlashAttribute("successMessage", "회원가입이 완료되었습니다!");
         return "redirect:/login";
     }
 
