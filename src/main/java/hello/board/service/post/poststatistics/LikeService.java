@@ -1,6 +1,7 @@
 package hello.board.service.post.poststatistics;
 
 import hello.board.domain.like.Like;
+import hello.board.domain.like.LikeResponse;
 import hello.board.domain.post.Post;
 import hello.board.domain.user.User;
 import hello.board.repository.LikeRepository;
@@ -13,33 +14,34 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class LikeService {
 
     private final LikeRepository likeRepository;
     private final EntityFinder entityFinder;
 
-    public int likePost(Long postId, String userId) {
+    @Transactional
+    public LikeResponse likePost(Long postId, String username) {
         Post post = entityFinder.getPost(postId);
-        User user = entityFinder.getLoginUser(userId);
+        User user = entityFinder.getLoginUser(username);
 
-        Optional<Like> like = likeRepository.findByPostIdAndUsername(postId, userId);
+        Optional<Like> like = likeRepository.findByPostIdAndUsername(postId, username);
 
         if (like.isPresent()) {
             // 좋아요 취소
             likeRepository.delete(like.get());
+            post.decrementLikeCount();
+            int likeCount = post.getLikeCount();
+            return new LikeResponse(likeCount, false);
         } else {
             // 좋아요 추가
             Like newLike = Like.builder()
-                    .post(post)
                     .user(user)
+                    .post(post)
                     .build();
             likeRepository.save(newLike);
+            post.incrementLikeCount();
+            int likeCount = post.getLikeCount();
+            return new LikeResponse(likeCount, true);
         }
-        return likeRepository.countByPostId(postId).intValue();
-    }
-
-    public Long getLikeCount(Long postId) {
-        return likeRepository.countByPostId(postId);
     }
 }
