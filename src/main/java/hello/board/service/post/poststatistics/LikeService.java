@@ -6,10 +6,14 @@ import hello.board.domain.post.Post;
 import hello.board.domain.user.User;
 import hello.board.repository.LikeRepository;
 import hello.board.service.EntityFinder;
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLTransactionRollbackException;
 import java.util.Optional;
 
 @Service
@@ -19,6 +23,12 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final EntityFinder entityFinder;
 
+    @Retryable(
+            retryFor = {
+                    OptimisticLockException.class,
+                    SQLTransactionRollbackException.class},
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 100))
     @Transactional
     public LikeResponse likePost(Long postId, String username) {
         Post post = entityFinder.getPost(postId);
