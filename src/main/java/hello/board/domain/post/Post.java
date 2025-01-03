@@ -43,6 +43,11 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = ALL, orphanRemoval = true)
     private final List<Image> images = new ArrayList<>();
 
+    @Version
+    private Integer version;
+
+    private Integer likeCount = 0;
+
     @Builder
     private Post(String title, String content, User user) {
         this.title = title;
@@ -58,5 +63,15 @@ public class Post extends BaseEntity {
     public void updatePost(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void incrementLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decrementLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
     }
 }

@@ -4,9 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class LikeResponse {
-    private Long likeCount;
+    private final int likeCount;
+    private final boolean liked;
 
-    public LikeResponse(int updatedLikeCount) {
-        this.likeCount = (long) updatedLikeCount;
+    public LikeResponse(int updatedLikeCount, boolean liked) {
+        this.likeCount = updatedLikeCount;
+        this.liked = liked;
     }
 }

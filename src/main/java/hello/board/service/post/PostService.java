@@ -54,11 +54,10 @@ public class PostService {
 
         viewService.handleView(postId, request);
 
-        Long likeCount = likeRepository.countByPostId(postId);
+        Integer likeCount = post.getLikeCount();
         Integer viewCount = viewService.getViewCount(postId);
 
-        return PostDetailDto.of(post, viewCount,likeCount.intValue());
-
+        return PostDetailDto.of(post, viewCount,likeCount);
     }
 
     public PostForm findPostForm(Long postId) {
