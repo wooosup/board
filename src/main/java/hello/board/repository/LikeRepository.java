@@ -12,5 +12,4 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     @Query("SELECT l FROM Like l WHERE l.post.id = :postId AND l.user.username = :username")
     Optional<Like> findByPostIdAndUsername(@Param("postId") Long postId, @Param("username") String username);
 
-    Long countByPostId(Long postId);
 }
