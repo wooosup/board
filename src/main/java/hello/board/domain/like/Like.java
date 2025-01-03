@@ -13,8 +13,13 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "likes")
 @Getter
+@Table(
+        name = "likes",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "post_id"})
+        }
+)
 public class Like extends BaseEntity {
 
     @Id
