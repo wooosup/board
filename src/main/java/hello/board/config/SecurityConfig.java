@@ -36,7 +36,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/","/post/{postId}/**").permitAll()
-                        .requestMatchers("/post/create","/post/delete/**","/post/edit/**","/mypage","/messages/**").authenticated()
+                        .requestMatchers("/post/create","/post/delete/**","/post/edit/**","/mypage","/messages/**", "/api/likes/**").authenticated()
                         .requestMatchers("/login", "/signup","/css/**", "/js/**", "/upload-images/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
