@@ -8,7 +8,7 @@ public interface FileStore {
 
     String uploadFile(MultipartFile file) throws IOException;
 
-    void deleteFile(String filePath) throws IOException;
+    void deleteFile(String fileName) throws IOException;
 
     String generateFileUrl(String fileName);
 }
