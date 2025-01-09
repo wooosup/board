@@ -1,21 +1,21 @@
 package hello.board.service.image;
 
+import hello.board.exception.FileStorageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,44 +27,44 @@ public class S3Service implements FileStore{
 
     private final S3Client s3Client;
 
-    public String uploadFile(MultipartFile file) {
-        String fileName = createFileName(file.getOriginalFilename());
+    @Override
+    public String uploadFile(MultipartFile file) throws IOException {
+        String originalFilename = file.getOriginalFilename();
+        String fileName = FileUtils.createFileName(originalFilename);
+
         try (InputStream inputStream = file.getInputStream()) {
             s3Client.putObject(PutObjectRequest.builder()
                             .bucket(bucketName)
                             .key(fileName)
-                            .acl("public-read")
+                            .acl(ObjectCannedACL.PUBLIC_READ)
+                            .contentType(file.getContentType())
                             .build(),
                     RequestBody.fromInputStream(inputStream, file.getSize()));
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.", e);
+        } catch (S3Exception e) {
+            throw new FileStorageException("S3에 파일 업로드가 실패했습니다.", e);
         }
         return fileName;
     }
 
-
+    @Override
     public void deleteFile(String fileName) {
-        s3Client.deleteObject(DeleteObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fileName)
-                .build());
+        try {
+            s3Client.deleteObject(DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileName)
+                    .build());
+        } catch (S3Exception e) {
+            throw new FileStorageException("S3에서 파일 삭제가 실패했습니다.", e);
+        }
     }
 
     @Override
     public String generateFileUrl(String fileName) {
-        URL url = s3Client.utilities().getUrl(b -> b.bucket(bucketName).key(fileName));
-        return url.toString();
-    }
-
-    private String createFileName(String fileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
-    }
-
-    private String getFileExtension(String fileName) {
         try {
-            return fileName.substring(fileName.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
+            URL url = s3Client.utilities().getUrl(b -> b.bucket(bucketName).key(fileName));
+            return url.toString();
+        } catch (S3Exception e) {
+            throw new FileStorageException("S3에서 파일 URL 생성이 실패했습니다.", e);
         }
     }
 }
