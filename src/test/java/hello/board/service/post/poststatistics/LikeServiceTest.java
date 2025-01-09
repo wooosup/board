@@ -57,7 +57,8 @@ class LikeServiceTest {
         //then
         assertThat(likeCount).isEqualTo(1);
     }
-
+    
+    @DisplayName("동시성 테스트")
     @Test
     void multi() throws Exception {
         //given
