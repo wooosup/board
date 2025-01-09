@@ -1,62 +1,66 @@
 package hello.board.service.image;
 
+import hello.board.exception.FileStorageException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
+import java.nio.file.StandardCopyOption;
+import java.util.Objects;
+
+import static org.springframework.util.StringUtils.cleanPath;
 
 @Service
 @Profile("local")
 public class LocalFileStore implements FileStore {
 
-    @Value("${file.dir}")
-    private String uploadDir;
+    private final Path uploadDir;
+
+    public LocalFileStore(@Value("${file.dir}") String uploadDir) {
+        this.uploadDir = Paths.get(uploadDir).toAbsolutePath().normalize();
+        try {
+            Files.createDirectories(this.uploadDir);
+        } catch (IOException e) {
+            throw new FileStorageException("로컬 저장소 디렉토리를 생성할 수 없습니다.", e);
+        }
+    }
+
 
     @Override
-    public String uploadFile(MultipartFile file) throws IOException {
-        String originalFileName = file.getOriginalFilename();
-        String fileName = createFileName(originalFileName);
-        String filePath = Paths.get(uploadDir, fileName).toString();
+    public String uploadFile(MultipartFile file) {
+        String originalFileName = cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        String fileName = FileUtils.createFileName(originalFileName);
 
-        // 디렉토리가 없으면 생성
-        File dir = new File(uploadDir);
-        if (!dir.exists()) {
-            dir.mkdirs();
+        try {
+            if (originalFileName.contains("..")) {
+                throw new FileStorageException("잘못된 파일 경로: " + originalFileName);
+            }
+
+            Path targetLocation = this.uploadDir.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            return fileName;
+        } catch (IOException e) {
+            throw new FileStorageException("파일 저장 실패: " + originalFileName, e);
         }
-
-        // 파일 저장
-        file.transferTo(new File(filePath));
-
-        return fileName;
     }
 
     @Override
-    public void deleteFile(String filePath) throws IOException {
-        String fullPath = Paths.get(uploadDir, filePath).toString();
-        File file = new File(fullPath);
-        if (file.exists()) {
-            if (file.delete()) {
-                return;
-            }
-            throw new IOException("파일 삭제에 실패했습니다: " + fullPath);
+    public void deleteFile(String fileName) {
+        Path filePath = this.uploadDir.resolve(fileName).normalize();
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new FileStorageException("파일 삭제에 실패했습니다: " + fileName, e);
         }
     }
 
     @Override
     public String generateFileUrl(String fileName) {
         return "/upload-images/" + fileName;
-    }
-
-    private String createFileName(String originalFileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(originalFileName));
-    }
-
-    private String getFileExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf("."));
     }
 }
