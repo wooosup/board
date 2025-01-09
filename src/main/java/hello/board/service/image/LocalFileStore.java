@@ -30,7 +30,6 @@ public class LocalFileStore implements FileStore {
         }
     }
 
-
     @Override
     public String uploadFile(MultipartFile file) {
         String originalFileName = cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
