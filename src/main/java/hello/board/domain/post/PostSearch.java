@@ -1,5 +1,6 @@
 package hello.board.domain.post;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -10,7 +11,8 @@ public class PostSearch {
     private final String keyword;
     private final String searchField;
 
-    public PostSearch(String keyword, String searchField) {
+    @Builder
+    private PostSearch(String keyword, String searchField) {
         this.keyword = Objects.requireNonNullElse(keyword, "");
         this.searchField = Objects.requireNonNullElse(searchField, "");
     }

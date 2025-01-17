@@ -32,7 +32,11 @@ public class PostController {
     public String postList(@RequestParam(value = "keyword", required = false) String keyword,
                            @RequestParam(value = "searchField", required = false) String searchField,
                            @RequestParam(defaultValue = "0") int page, Model model) {
-        PostSearch search = new PostSearch(keyword, searchField);
+        PostSearch search = PostSearch.builder()
+                .keyword(keyword)
+                .searchField(searchField)
+                .build();
+
         Pageable pageable = PageRequest.of(page, 10);
         Page<MainPostDto> posts = postService.searchPosts(search, pageable);
 
