@@ -40,11 +40,26 @@ public class PostController {
         Pageable pageable = PageRequest.of(page, 10);
         Page<MainPostDto> posts = postService.searchPosts(search, pageable);
 
+        int pageBlockSize = 5;
+        int currentPage = posts.getNumber();
+        int totalPages = posts.getTotalPages();
+
+        int startPage = (currentPage / pageBlockSize) * pageBlockSize;
+        int endPage = startPage + pageBlockSize - 1;
+        if (endPage >= totalPages) {
+            endPage = totalPages - 1;
+        }
+
         model.addAttribute("posts", posts);
         model.addAttribute("search", search);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
         return "posts/postList";
     }
+
 
 
     @GetMapping("/post/create")

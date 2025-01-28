@@ -134,23 +134,23 @@
     <nav aria-label="Page navigation" th:if="${posts != null}">
         <ul class="pagination justify-content-center">
             <!-- 이전 페이지 버튼 -->
-            <li class="page-item" th:classappend="${posts.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/(page=${posts.number - 1}, keyword=${search.keyword}, searchField=${search.searchField})}"
+            <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${startPage - 1}, keyword=${search.keyword}, searchField=${search.searchField})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
 
             <!-- 페이지 번호 버튼 -->
-            <li th:each="pageNum : ${#numbers.sequence(0, posts.totalPages > 0 ? posts.totalPages - 1 : 0)}"
-                th:classappend="${pageNum == posts.number} ? 'active' : ''" class="page-item">
+            <li th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
+                th:classappend="${pageNum == currentPage} ? 'active' : ''" class="page-item">
                 <a class="page-link" th:href="@{/(page=${pageNum}, keyword=${search.keyword}, searchField=${search.searchField})}"
                    th:text="${pageNum + 1}">1</a>
             </li>
 
             <!-- 다음 페이지 버튼 -->
-            <li class="page-item" th:classappend="${posts.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/(page=${posts.number + 1}, keyword=${search.keyword}, searchField=${search.searchField})}"
+            <li class="page-item" th:classappend="${endPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${endPage + 1}, keyword=${search.keyword}, searchField=${search.searchField})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
