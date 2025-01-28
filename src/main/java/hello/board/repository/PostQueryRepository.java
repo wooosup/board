@@ -1,6 +1,6 @@
 package hello.board.repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hello.board.domain.post.MainPostDto;
 import hello.board.domain.post.PostSearch;
@@ -25,15 +25,20 @@ public class PostQueryRepository {
     }
 
     public Page<MainPostDto> searchPosts(PostSearch search, Pageable pageable) {
-        BooleanExpression predicate = createPredicate(search);
+        BooleanBuilder builder = createPredicate(search);
 
-        List<MainPostDto> content = fetchContent(pageable, predicate);
-        long total = fetchTotalCount(predicate);
+        List<MainPostDto> content = fetchContent(pageable, builder);
+        long total = fetchTotalCount(builder);
+
+        final long MAX_ITEMS = 1000;
+        if (total > MAX_ITEMS) {
+            total = MAX_ITEMS;
+        }
 
         return new PageImpl<>(content, pageable, total);
     }
 
-    private List<MainPostDto> fetchContent(Pageable pageable, BooleanExpression predicate) {
+    private List<MainPostDto> fetchContent(Pageable pageable, BooleanBuilder predicate) {
         QPost post = QPost.post;
         QUser user = QUser.user;
 
@@ -57,28 +62,29 @@ public class PostQueryRepository {
     }
 
 
-    private long fetchTotalCount(BooleanExpression predicate) {
+    private long fetchTotalCount(BooleanBuilder builder) {
         QPost post = QPost.post;
 
         return jpaQueryFactory
                 .select(post.count())
                 .from(post)
-                .where(predicate)
+                .where(builder)
                 .fetchOne();
     }
 
 
-    private BooleanExpression createPredicate(PostSearch search) {
-        BooleanExpression predicate = null;
+    private BooleanBuilder createPredicate(PostSearch search) {
+        QPost post = QPost.post;
+        BooleanBuilder builder = new BooleanBuilder();
 
         if ("title".equals(search.getSearchField())) {
-            predicate = QPost.post.title.containsIgnoreCase(search.getKeyword());
+            builder.and(post.title.containsIgnoreCase(search.getKeyword()));
         } else if ("content".equals(search.getSearchField())) {
-            predicate = QPost.post.content.containsIgnoreCase(search.getKeyword());
+            builder.and(post.content.containsIgnoreCase(search.getKeyword()));
         } else if ("nickname".equals(search.getSearchField())) {
-            predicate = QPost.post.user.nickname.containsIgnoreCase(search.getKeyword());
+            builder.and(post.user.nickname.containsIgnoreCase(search.getKeyword()));
         }
 
-        return predicate;
+        return builder;
     }
 }
