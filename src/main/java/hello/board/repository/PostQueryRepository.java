@@ -65,11 +65,14 @@ public class PostQueryRepository {
     private long fetchTotalCount(BooleanBuilder builder) {
         QPost post = QPost.post;
 
-        return jpaQueryFactory
-                .select(post.count())
+        Long total = jpaQueryFactory
+                .select(post.id.count())
                 .from(post)
                 .where(builder)
+                .limit(1000)
                 .fetchOne();
+
+        return total != null ? total : 0;
     }
 
 
@@ -78,11 +81,11 @@ public class PostQueryRepository {
         BooleanBuilder builder = new BooleanBuilder();
 
         if ("title".equals(search.getSearchField())) {
-            builder.and(post.title.containsIgnoreCase(search.getKeyword()));
+            builder.and(post.title.startsWith(search.getKeyword()));
         } else if ("content".equals(search.getSearchField())) {
-            builder.and(post.content.containsIgnoreCase(search.getKeyword()));
+            builder.and(post.content.startsWith(search.getKeyword()));
         } else if ("nickname".equals(search.getSearchField())) {
-            builder.and(post.user.nickname.containsIgnoreCase(search.getKeyword()));
+            builder.and(post.user.nickname.startsWith(search.getKeyword()));
         }
 
         return builder;
