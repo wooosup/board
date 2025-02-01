@@ -44,6 +44,8 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     // h2
     runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.springframework.boot:spring-boot-docker-compose'
+    runtimeOnly 'org.springframework.boot:spring-boot-docker-compose'
     // test
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.mockito:mockito-core:4.11.0'
