@@ -1,7 +1,7 @@
 package hello.board.service;
 
-import hello.board.domain.post.Image;
-import hello.board.repository.ImageRepository;
+import hello.board.domain.entity.post.image.Image;
+import hello.board.domain.repository.ImageRepository;
 import hello.board.service.image.FileService;
 import hello.board.service.image.ImageService;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,7 @@
 package hello.board.controller;
 
-import hello.board.domain.message.MessageDto;
-import hello.board.domain.message.MessageForm;
+import hello.board.service.message.dto.MessageDto;
+import hello.board.service.message.dto.MessageForm;
 import hello.board.service.EntityFinder;
 import hello.board.service.message.MessageService;
 import lombok.RequiredArgsConstructor;

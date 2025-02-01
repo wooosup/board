@@ -1,8 +1,8 @@
 package hello.board.controller;
 
-import hello.board.domain.message.MessageDto;
-import hello.board.domain.user.UserForm;
-import hello.board.domain.user.UserPostsAndCommentsDto;
+import hello.board.service.message.dto.MessageDto;
+import hello.board.service.user.dto.UserForm;
+import hello.board.service.user.dto.UserPostsAndCommentsDto;
 import hello.board.service.message.MessageService;
 import hello.board.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;

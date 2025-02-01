@@ -1,10 +1,10 @@
 package hello.board.controller;
 
-import hello.board.domain.comment.CommentDto;
-import hello.board.domain.comment.CommentForm;
-import hello.board.domain.post.*;
+import hello.board.service.comment.dto.CommentDto;
+import hello.board.service.comment.dto.CommentForm;
 import hello.board.service.comment.CommentService;
 import hello.board.service.post.PostService;
+import hello.board.service.post.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

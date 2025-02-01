@@ -1,11 +1,14 @@
 package hello.board.service;
 
-import hello.board.domain.comment.Comment;
-import hello.board.domain.message.Message;
-import hello.board.domain.post.Post;
-import hello.board.domain.user.User;
+import hello.board.domain.entity.comment.Comment;
+import hello.board.domain.entity.message.Message;
+import hello.board.domain.entity.post.Post;
+import hello.board.domain.entity.user.User;
 import hello.board.exception.EntityNotFoundException;
-import hello.board.repository.*;
+import hello.board.domain.repository.CommentRepository;
+import hello.board.domain.repository.MessageRepository;
+import hello.board.domain.repository.PostRepository;
+import hello.board.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package hello.board.controller;
 
-import hello.board.domain.like.LikeResponse;
+import hello.board.service.post.poststatistics.dto.LikeResponse;
 import hello.board.service.post.poststatistics.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

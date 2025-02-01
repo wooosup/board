@@ -1,11 +1,11 @@
 package hello.board.service.comment;
 
-import hello.board.domain.comment.Comment;
-import hello.board.domain.comment.CommentDto;
-import hello.board.domain.comment.CommentForm;
-import hello.board.domain.post.Post;
-import hello.board.domain.user.User;
-import hello.board.repository.CommentRepository;
+import hello.board.domain.entity.comment.Comment;
+import hello.board.service.comment.dto.CommentDto;
+import hello.board.service.comment.dto.CommentForm;
+import hello.board.domain.entity.post.Post;
+import hello.board.domain.entity.user.User;
+import hello.board.domain.repository.CommentRepository;
 import hello.board.service.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

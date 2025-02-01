@@ -1,13 +1,13 @@
 package hello.board.service.user;
 
-import hello.board.domain.comment.CommentDto;
-import hello.board.domain.post.MyPagePostDto;
-import hello.board.domain.user.User;
-import hello.board.domain.user.UserForm;
-import hello.board.domain.user.UserPostsAndCommentsDto;
-import hello.board.repository.CommentRepository;
-import hello.board.repository.PostRepository;
-import hello.board.repository.UserRepository;
+import hello.board.service.comment.dto.CommentDto;
+import hello.board.service.post.dto.MyPagePostDto;
+import hello.board.domain.entity.user.User;
+import hello.board.service.user.dto.UserForm;
+import hello.board.service.user.dto.UserPostsAndCommentsDto;
+import hello.board.domain.repository.CommentRepository;
+import hello.board.domain.repository.PostRepository;
+import hello.board.domain.repository.UserRepository;
 import hello.board.service.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

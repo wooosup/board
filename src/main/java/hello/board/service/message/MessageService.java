@@ -1,10 +1,10 @@
 package hello.board.service.message;
 
-import hello.board.domain.message.Message;
-import hello.board.domain.message.MessageDto;
-import hello.board.domain.message.MessageForm;
-import hello.board.domain.user.User;
-import hello.board.repository.MessageRepository;
+import hello.board.domain.entity.message.Message;
+import hello.board.service.message.dto.MessageDto;
+import hello.board.service.message.dto.MessageForm;
+import hello.board.domain.entity.user.User;
+import hello.board.domain.repository.MessageRepository;
 import hello.board.service.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,13 @@ public class MessageService {
     private final EntityFinder entityFinder;
 
     @Transactional
-    public void sendMessage(String senderUsername, MessageForm form) {
+    public MessageDto sendMessage(String senderUsername, MessageForm form) {
         User sender = entityFinder.getLoginUser(senderUsername);
         User receiver = entityFinder.getLoginUser(form.getReceiverUsername());
 
         Message message = form.toEntity(sender, receiver);
 
-        messageRepository.save(message);
+        return MessageDto.of(messageRepository.save(message));
     }
 
     public List<MessageDto> getReceivedMessages(String username) {

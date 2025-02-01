@@ -1,9 +1,9 @@
 package hello.board.service.post.poststatistics;
 
-import hello.board.domain.post.Post;
-import hello.board.domain.user.User;
-import hello.board.repository.PostRepository;
-import hello.board.repository.UserRepository;
+import hello.board.domain.entity.post.Post;
+import hello.board.domain.entity.user.User;
+import hello.board.domain.repository.PostRepository;
+import hello.board.domain.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +36,8 @@ class LikeServiceTest {
     void like() throws Exception {
         //given
         User user = User.builder()
-                .username("user")
-                .nickname("user")
+                .username("user4321")
+                .nickname("user4321")
                 .password("1234")
                 .build();
         userRepository.save(user);

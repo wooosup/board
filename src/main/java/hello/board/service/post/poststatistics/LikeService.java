@@ -1,10 +1,10 @@
 package hello.board.service.post.poststatistics;
 
-import hello.board.domain.like.Like;
-import hello.board.domain.like.LikeResponse;
-import hello.board.domain.post.Post;
-import hello.board.domain.user.User;
-import hello.board.repository.LikeRepository;
+import hello.board.domain.entity.like.Like;
+import hello.board.service.post.poststatistics.dto.LikeResponse;
+import hello.board.domain.entity.post.Post;
+import hello.board.domain.entity.user.User;
+import hello.board.domain.repository.LikeRepository;
 import hello.board.service.EntityFinder;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;

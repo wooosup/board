@@ -1,10 +1,10 @@
 package hello.board.service;
 
-import hello.board.domain.comment.Comment;
-import hello.board.domain.comment.CommentForm;
-import hello.board.domain.post.Post;
-import hello.board.domain.user.User;
-import hello.board.repository.CommentRepository;
+import hello.board.domain.entity.comment.Comment;
+import hello.board.service.comment.dto.CommentForm;
+import hello.board.domain.entity.post.Post;
+import hello.board.domain.entity.user.User;
+import hello.board.domain.repository.CommentRepository;
 import hello.board.service.comment.CommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

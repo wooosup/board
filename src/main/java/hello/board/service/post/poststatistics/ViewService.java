@@ -1,7 +1,7 @@
 package hello.board.service.post.poststatistics;
 
-import hello.board.domain.post.PostStatistics;
-import hello.board.repository.PostStatisticsRepository;
+import hello.board.domain.entity.post.PostStatistics;
+import hello.board.domain.repository.PostStatisticsRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -1,10 +1,10 @@
 package hello.board.service.message;
 
 import hello.board.domain.Role;
-import hello.board.domain.message.MessageDto;
-import hello.board.domain.message.MessageForm;
-import hello.board.domain.user.User;
-import hello.board.repository.UserRepository;
+import hello.board.service.message.dto.MessageDto;
+import hello.board.service.message.dto.MessageForm;
+import hello.board.domain.entity.user.User;
+import hello.board.domain.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

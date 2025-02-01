@@ -1,6 +1,6 @@
 package hello.board.controller;
 
-import hello.board.domain.comment.CommentForm;
+import hello.board.service.comment.dto.CommentForm;
 import hello.board.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

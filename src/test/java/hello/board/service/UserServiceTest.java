@@ -1,6 +1,6 @@
 package hello.board.service;
 
-import hello.board.domain.user.UserForm;
+import hello.board.service.user.dto.UserForm;
 import hello.board.service.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

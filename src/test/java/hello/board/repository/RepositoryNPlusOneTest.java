@@ -1,7 +1,10 @@
 package hello.board.repository;
 
 import hello.board.domain.Role;
-import hello.board.domain.user.User;
+import hello.board.domain.entity.user.User;
+import hello.board.domain.repository.CommentRepository;
+import hello.board.domain.repository.MessageRepository;
+import hello.board.domain.repository.PostRepository;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
 import org.hibernate.stat.Statistics;
