@@ -4,6 +4,7 @@ import hello.board.domain.entity.post.Post;
 import hello.board.service.image.dto.ImageDto;
 import hello.board.domain.entity.user.User;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,17 @@ public class PostForm {
 
     private List<ImageDto> existingImages;
 
+    public PostForm() {
+    }
+
+    @Builder
+    private PostForm(String title, String content, List<MultipartFile> images, List<ImageDto> existingImages) {
+        this.title = title;
+        this.content = content;
+        this.images = images;
+        this.existingImages = existingImages;
+    }
+
     public Post toEntity(User user) {
         return Post.builder()
                 .title(this.title)
@@ -43,4 +55,5 @@ public class PostForm {
         form.setExistingImages(post.getImages().stream().map(ImageDto::of).toList());
         return form;
     }
+
 }
