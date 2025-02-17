@@ -69,8 +69,8 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(UpdateForm form, List<MultipartFile> imageFiles, String loginId, List<Long> imageIdsToDelete) {
-        Post post = entityFinder.getPost(form.getId());
+    public void updatePost(Long postId ,PostForm form, List<MultipartFile> imageFiles, String loginId, List<Long> imageIdsToDelete) {
+        Post post = entityFinder.getPost(postId);
         User loginUser = entityFinder.getLoginUser(loginId);
 
         checkAuthorization(post.getUser(), loginUser);

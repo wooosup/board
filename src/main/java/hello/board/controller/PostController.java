@@ -61,10 +61,9 @@ public class PostController {
     }
 
 
-
     @GetMapping("/post/create")
     public String createPostForm(Model model) {
-        model.addAttribute("form", new PostForm());
+        model.addAttribute("form", PostForm.builder().build());
         return "posts/createPostForm";
     }
 
@@ -103,8 +102,7 @@ public class PostController {
                              @RequestParam(value = "images", required = false) List<MultipartFile> images,
                              @RequestParam(value = "imageIdsToDelete", required = false) List<Long> imageIdsToDelete,
                              Principal pri) {
-        form.setId(postId);
-        postService.updatePost(new UpdateForm(form), images, pri.getName(), imageIdsToDelete);
+        postService.updatePost(postId, form, images, pri.getName(), imageIdsToDelete);
         return "redirect:/post/" + postId;
     }
 
