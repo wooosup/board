@@ -10,7 +10,10 @@ import hello.board.domain.repository.PostStatisticsRepository;
 import hello.board.exception.ImageException;
 import hello.board.service.EntityFinder;
 import hello.board.service.image.ImageService;
-import hello.board.service.post.dto.*;
+import hello.board.service.post.dto.MainPostDto;
+import hello.board.service.post.dto.PostDetailDto;
+import hello.board.service.post.dto.PostForm;
+import hello.board.service.post.dto.PostSearch;
 import hello.board.service.post.poststatistics.ViewService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +62,7 @@ public class PostService {
         Integer likeCount = post.getLikeCount();
         Integer viewCount = viewService.getViewCount(postId);
 
-        return PostDetailDto.of(post, viewCount,likeCount);
+        return PostDetailDto.of(post, viewCount, likeCount);
     }
 
     public PostForm findPostForm(Long postId) {
@@ -69,7 +72,7 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId ,PostForm form, List<MultipartFile> imageFiles, String loginId, List<Long> imageIdsToDelete) {
+    public void updatePost(Long postId, PostForm form, List<MultipartFile> imageFiles, String loginId, List<Long> imageIdsToDelete) {
         Post post = entityFinder.getPost(postId);
         User loginUser = entityFinder.getLoginUser(loginId);
 
@@ -95,8 +98,7 @@ public class PostService {
         postRepository.delete(post);
     }
 
-
-    public Page<MainPostDto> searchPosts(PostSearch search, Pageable page){
+    public Page<MainPostDto> searchPosts(PostSearch search, Pageable page) {
         return postQueryRepository.searchPosts(search, page);
     }
 
