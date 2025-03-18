@@ -4,9 +4,9 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hello.board.service.post.dto.MainPostDto;
 import hello.board.service.post.dto.PostSearch;
-import hello.board.domain.post.QMainPostDto;
-import hello.board.domain.post.QPost;
-import hello.board.domain.user.QUser;
+import hello.board.service.post.dto.QMainPostDto;
+import hello.board.domain.entity.post.QPost;
+import hello.board.domain.entity.user.QUser;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -42,7 +42,6 @@ public class PostQueryRepository {
         QPost post = QPost.post;
         QUser user = QUser.user;
 
-        // 페이징된 결과 조회
         return jpaQueryFactory
                 .select(new QMainPostDto(
                         post.id,
@@ -81,11 +80,11 @@ public class PostQueryRepository {
         BooleanBuilder builder = new BooleanBuilder();
 
         if ("title".equals(search.getSearchField())) {
-            builder.and(post.title.startsWith(search.getKeyword()));
+            builder.and(post.title.contains(search.getKeyword()));
         } else if ("content".equals(search.getSearchField())) {
-            builder.and(post.content.startsWith(search.getKeyword()));
+            builder.and(post.content.contains(search.getKeyword()));
         } else if ("nickname".equals(search.getSearchField())) {
-            builder.and(post.user.nickname.startsWith(search.getKeyword()));
+            builder.and(post.user.nickname.contains(search.getKeyword()));
         }
 
         return builder;
