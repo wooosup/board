@@ -50,7 +50,7 @@ public class Post extends BaseEntity {
     private Integer likeCount = 0;
 
     @Transient
-    private Integer viewCount = 0;
+    private final Integer viewCount = 0;
 
     @Builder
     private Post(String title, String content, User user) {
@@ -77,13 +77,5 @@ public class Post extends BaseEntity {
         if (this.likeCount > 0) {
             this.likeCount--;
         }
-    }
-
-    public void setViewCount(Integer viewCount) {
-        this.viewCount = viewCount;
-    }
-
-    public int getHotScore() {
-        return this.viewCount + (this.likeCount * 10);
     }
 }
