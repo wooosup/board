@@ -1,5 +1,6 @@
 package hello.board.service.post;
 
+import hello.board.controller.post.response.PostResponse;
 import hello.board.domain.Role;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
@@ -8,6 +9,7 @@ import hello.board.domain.repository.UserRepository;
 import hello.board.exception.EntityNotFoundException;
 import hello.board.service.post.dto.PostDetailDto;
 import hello.board.service.post.dto.PostForm;
+import hello.board.service.post.dto.UpdatePostForm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,12 +49,11 @@ class PostServiceTest {
                 .build();
 
         //when
-        postService.savePost(form, null, user.getUsername());
+        PostResponse response = postService.savePost(form, null, user.getUsername());
 
         //then
-        Post savedPost = postRepository.findAll().get(0);
-        assertThat(savedPost.getTitle()).isEqualTo("제목");
-        assertThat(savedPost.getContent()).isEqualTo("내용");
+        assertThat(response.getTitle()).isEqualTo("제목");
+        assertThat(response.getContent()).isEqualTo("내용");
     }
 
     @Test
@@ -109,16 +110,16 @@ class PostServiceTest {
                 .build();
         postRepository.save(post);
 
-        PostForm form = PostForm.builder()
+        UpdatePostForm form = UpdatePostForm.builder()
                 .title("수정된 제목")
                 .content("수정된 내용")
                 .build();
 
         //when
-        postService.updatePost(post.getId(), form, null, user.getUsername(), null);
+        PostResponse response = postService.updatePost(post.getId(), form, null, user.getUsername(), null);
 
         //then
-        assertThat(post.getTitle()).isEqualTo("수정된 제목");
-        assertThat(post.getContent()).isEqualTo("수정된 내용");
+        assertThat(response.getTitle()).isEqualTo("수정된 제목");
+        assertThat(response.getContent()).isEqualTo("수정된 내용");
     }
 }
