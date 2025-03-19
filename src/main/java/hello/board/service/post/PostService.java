@@ -1,5 +1,6 @@
 package hello.board.service.post;
 
+import hello.board.controller.post.response.PostResponse;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.post.PostStatistics;
 import hello.board.domain.entity.post.image.Image;
@@ -10,10 +11,8 @@ import hello.board.domain.repository.PostStatisticsRepository;
 import hello.board.exception.ImageException;
 import hello.board.service.EntityFinder;
 import hello.board.service.image.ImageService;
-import hello.board.service.post.dto.MainPostDto;
-import hello.board.service.post.dto.PostDetailDto;
-import hello.board.service.post.dto.PostForm;
-import hello.board.service.post.dto.PostSearch;
+import hello.board.service.image.dto.ImageDto;
+import hello.board.service.post.dto.*;
 import hello.board.service.post.poststatistics.ViewService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,7 @@ public class PostService {
     private final ViewService viewService;
 
     @Transactional
-    public Long savePost(PostForm form, List<MultipartFile> imageFiles, String loginId) {
+    public PostResponse savePost(PostForm form, List<MultipartFile> imageFiles, String loginId) {
         User loginUser = entityFinder.getLoginUser(loginId);
 
         Post post = form.toEntity(loginUser);
@@ -51,7 +50,7 @@ public class PostService {
 
         createPostStatistics(savedPost.getId());
 
-        return savedPost.getId();
+        return PostResponse.of(savedPost);
     }
 
     public PostDetailDto findByPostId(Long postId, HttpServletRequest request) {
@@ -67,12 +66,19 @@ public class PostService {
 
     public PostForm findPostForm(Long postId) {
         Post post = entityFinder.getPost(postId);
+        List<ImageDto> images = post.getImages().stream()
+                .map(ImageDto::of)
+                .toList();
 
-        return PostForm.of(post);
+        return PostForm.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .existingImages(images)
+                .build();
     }
 
     @Transactional
-    public void updatePost(Long postId, PostForm form, List<MultipartFile> imageFiles, String loginId, List<Long> imageIdsToDelete) {
+    public PostResponse updatePost(Long postId, UpdatePostForm form, List<MultipartFile> imageFiles, String loginId, List<Long> imageIdsToDelete) {
         Post post = entityFinder.getPost(postId);
         User loginUser = entityFinder.getLoginUser(loginId);
 
@@ -85,6 +91,8 @@ public class PostService {
             saveImagesToPost(imageFiles, post);
         }
         post.updatePost(form.getTitle(), form.getContent());
+
+        return PostResponse.of(post);
     }
 
     @Transactional
