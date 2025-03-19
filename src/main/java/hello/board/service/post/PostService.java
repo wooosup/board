@@ -64,13 +64,13 @@ public class PostService {
         return PostDetailDto.of(post, viewCount, likeCount);
     }
 
-    public PostForm findPostForm(Long postId) {
+    public UpdatePostForm findPostForm(Long postId) {
         Post post = entityFinder.getPost(postId);
         List<ImageDto> images = post.getImages().stream()
                 .map(ImageDto::of)
                 .toList();
 
-        return PostForm.builder()
+        return UpdatePostForm.builder()
                 .title(post.getTitle())
                 .content(post.getContent())
                 .existingImages(images)
