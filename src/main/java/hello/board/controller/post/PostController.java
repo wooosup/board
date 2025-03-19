@@ -88,7 +88,7 @@ public class PostController {
     @GetMapping("/post/edit/{postId}")
     public String updatePostForm(@PathVariable Long postId, Model model) {
 
-        PostForm form = postService.findPostForm(postId);
+        UpdatePostForm form = postService.findPostForm(postId);
         model.addAttribute("form", form);
         model.addAttribute("postId", postId);
         return "posts/updatePostForm";
