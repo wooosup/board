@@ -4,18 +4,23 @@ import hello.board.domain.entity.comment.Comment;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class CommentForm {
 
     @NotEmpty(message = "댓글을 작성해주세요.")
-    private String content;
+    private final String content;
+    private final Long postId;
+    private final Long parentId;
 
-    private Long postId;
-    private Long parentId;
+    @Builder
+    private CommentForm(String content, Long postId, Long parentId) {
+        this.content = content;
+        this.postId = postId;
+        this.parentId = parentId;
+    }
 
     public Comment toEntity(User user, Post post, Comment parent) {
         return Comment.builder()
