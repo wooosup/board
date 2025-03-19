@@ -1,4 +1,4 @@
-package hello.board.controller;
+package hello.board.controller.message;
 
 import hello.board.service.message.dto.MessageDto;
 import hello.board.service.message.dto.MessageForm;
@@ -24,12 +24,14 @@ public class MessageController {
     @GetMapping("/send")
     public String sendMessageForm(@RequestParam(value = "receiverUsername", required = false) String receiverUsername,
                                   Model model) {
-        MessageForm messageForm = new MessageForm();
+        MessageForm messageForm = MessageForm.builder().build();
 
         if (receiverUsername != null) {
             String receiverNickname = entityFinder.getUserNickname(receiverUsername);
-            messageForm.setReceiverUsername(receiverUsername);
-            messageForm.setReceiverNickname(receiverNickname);
+            messageForm = MessageForm.builder()
+                    .receiverUsername(receiverUsername)
+                    .receiverNickname(receiverNickname)
+                    .build();
         }
 
         model.addAttribute("messageForm", messageForm);

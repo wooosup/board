@@ -6,21 +6,17 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class MessageForm {
 
     @NotNull(message = "수신자를 입력해주세요.")
-    private String receiverUsername;
+    private final String receiverUsername;
 
-    private String receiverNickname;
+    private final String receiverNickname;
 
     @NotEmpty(message = "메시지 내용을 입력해주세요.")
-    private String content;
+    private final String content;
 
     @Builder
     private MessageForm(String receiverUsername, String receiverNickname, String content) {
