@@ -1,4 +1,4 @@
-package hello.board.controller;
+package hello.board.controller.user;
 
 import hello.board.service.message.dto.MessageDto;
 import hello.board.service.user.dto.UserForm;
@@ -52,10 +52,9 @@ public class UserController {
             return "users/signup";
         }
 
-        // 중복 확인
         duplicateUser(form, result);
         if (result.hasErrors()) {
-            return "users/signup"; // 중복 오류 발생 시 다시 폼 페이지로 이동
+            return "users/signup";
         }
 
         userService.saveUser(form);
@@ -77,11 +76,9 @@ public class UserController {
         model.addAttribute("posts", userContent.getPosts());
         model.addAttribute("comments", userContent.getComments());
 
-        // 받은 쪽지 조회
         List<MessageDto> receivedMessages = messageService.getReceivedMessages(username);
         model.addAttribute("receivedMessages", receivedMessages);
 
-        // 보낸 쪽지 조회
         List<MessageDto> sentMessages = messageService.getSentMessages(username);
         model.addAttribute("sentMessages", sentMessages);
 

@@ -1,4 +1,4 @@
-package hello.board.controller;
+package hello.board.controller.post;
 
 import hello.board.service.post.poststatistics.dto.LikeResponse;
 import hello.board.service.post.poststatistics.LikeService;

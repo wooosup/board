@@ -1,8 +1,9 @@
-package hello.board.controller;
+package hello.board.controller.post;
 
+import hello.board.controller.post.response.PostResponse;
+import hello.board.service.comment.CommentService;
 import hello.board.service.comment.dto.CommentDto;
 import hello.board.service.comment.dto.CommentForm;
-import hello.board.service.comment.CommentService;
 import hello.board.service.post.PostService;
 import hello.board.service.post.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,10 +46,7 @@ public class PostController {
         int totalPages = posts.getTotalPages();
 
         int startPage = (currentPage / pageBlockSize) * pageBlockSize;
-        int endPage = startPage + pageBlockSize - 1;
-        if (endPage >= totalPages) {
-            endPage = totalPages - 1;
-        }
+        int endPage = Math.min(startPage + pageBlockSize - 1, totalPages - 1);
 
         model.addAttribute("posts", posts);
         model.addAttribute("search", search);
@@ -59,7 +57,6 @@ public class PostController {
 
         return "posts/postList";
     }
-
 
     @GetMapping("/post/create")
     public String createPostForm(Model model) {
@@ -73,8 +70,8 @@ public class PostController {
         if (result.hasErrors()) {
             return "posts/createPostForm";
         }
-        Long postId = postService.savePost(form, images, pri.getName());
-        return "redirect:/post/" + postId;
+        PostResponse response = postService.savePost(form, images, pri.getName());
+        return "redirect:/post/" + response.getId();
     }
 
     @GetMapping("/post/{postId}")
@@ -84,7 +81,7 @@ public class PostController {
 
         model.addAttribute("post", postDetail);
         model.addAttribute("comments", comments);
-        model.addAttribute("commentForm", new CommentForm());
+        model.addAttribute("commentForm", CommentForm.builder().build());
         return "posts/viewPost";
     }
 
@@ -98,7 +95,7 @@ public class PostController {
     }
 
     @PostMapping("/post/edit/{postId}")
-    public String updatePost(@PathVariable Long postId, @Validated @ModelAttribute("form") PostForm form,
+    public String updatePost(@PathVariable Long postId, @Validated @ModelAttribute("form") UpdatePostForm form,
                              @RequestParam(value = "images", required = false) List<MultipartFile> images,
                              @RequestParam(value = "imageIdsToDelete", required = false) List<Long> imageIdsToDelete,
                              Principal pri) {

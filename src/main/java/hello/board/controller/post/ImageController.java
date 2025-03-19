@@ -1,4 +1,4 @@
-package hello.board.controller;
+package hello.board.controller.post;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;

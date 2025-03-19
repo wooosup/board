@@ -1,4 +1,4 @@
-package hello.board.controller;
+package hello.board.controller.comment;
 
 import hello.board.service.comment.dto.CommentForm;
 import hello.board.service.comment.CommentService;
