@@ -4,7 +4,7 @@
 
 ---
 <div align="center">
-    <img src="src/main/resources/image/img_2.png" width="600">
+    <img src="src/main/resources/image/img_3.png" width="600">
 </div>
 
 ---
@@ -12,7 +12,7 @@
 - **유형**: 개인 프로젝트
 - **기간**: 2024년 10월 ~ 2024년 12월
 - **기술 스택**:
-    - **백엔드**: Spring Boot, JPA, QueryDSL
+    - **백엔드**: Spring Boot 3.3.5, JPA, QueryDSL
     - **프론트엔드**: Thymeleaf, Bootstrap
     - **데이터베이스**: MariaDB (RDS)
     - **클라우드 서비스**: AWS EC2, S3
