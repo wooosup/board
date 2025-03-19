@@ -1,5 +1,6 @@
 package hello.board.service.comment;
 
+import hello.board.controller.comment.response.CommentResponse;
 import hello.board.domain.entity.comment.Comment;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
@@ -21,7 +22,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final EntityFinder entityFinder;
 
-    public Long saveComment(CommentForm form, String loginId) {
+    public CommentResponse saveComment(CommentForm form, String loginId) {
         User loginUser = entityFinder.getLoginUser(loginId);
         Post post = entityFinder.getPost(form.getPostId());
 
@@ -36,8 +37,8 @@ public class CommentService {
             parent.getChildren().add(comment);
         }
 
-        commentRepository.save(comment);
-        return comment.getId();
+        Comment savedComment = commentRepository.save(comment);
+        return CommentResponse.of(savedComment);
     }
 
     @Transactional(readOnly = true)
@@ -71,21 +72,17 @@ public class CommentService {
     }
 
     private void removeParentIfPossible(Comment parent) {
-        if (parent == null) {
+        if (parent == null || !parent.isDeleted()) {
             return;
         }
 
-        if (!parent.isDeleted()) {
-            return;
+        long activeChildrenCount = commentRepository.countByParentIdAndDeletedFalse(parent.getId());
+
+        if (activeChildrenCount == 0) {
+            Comment parentOfParent = parent.getParent();
+            commentRepository.delete(parent);
+            removeParentIfPossible(parentOfParent);
         }
-
-        if (!parent.getChildren().isEmpty()) {
-            return;
-        }
-
-        commentRepository.delete(parent);
-
-        removeParentIfPossible(parent.getParent());
     }
 
     private static boolean hasChildren(Comment comment) {
