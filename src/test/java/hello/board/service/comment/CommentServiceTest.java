@@ -1,0 +1,199 @@
+package hello.board.service.comment;
+
+import hello.board.controller.comment.response.CommentResponse;
+import hello.board.domain.Role;
+import hello.board.domain.entity.comment.Comment;
+import hello.board.domain.entity.post.Post;
+import hello.board.domain.entity.user.User;
+import hello.board.domain.repository.CommentRepository;
+import hello.board.domain.repository.PostRepository;
+import hello.board.domain.repository.UserRepository;
+import hello.board.service.comment.dto.CommentDto;
+import hello.board.service.comment.dto.CommentForm;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@Transactional
+class CommentServiceTest {
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private EntityManager em;
+
+    @Test
+    void save() throws Exception {
+        //given
+        User user = User.builder()
+                .username("wss3325")
+                .password("1234")
+                .grade(Role.USER)
+                .nickname("seop")
+                .build();
+        userRepository.save(user);
+        Post post = Post.builder()
+                .user(user)
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        CommentForm commentForm = CommentForm.builder()
+                .postId(post.getId())
+                .parentId(null)
+                .content("댓글")
+                .build();
+
+        //when
+        CommentResponse result = commentService.saveComment(commentForm, user.getUsername());
+
+        //then
+        assertThat(result.getUser().getNickname()).isEqualTo("seop");
+        assertThat(result.getPost().getContent()).isEqualTo("내용");
+        assertThat(result.getContent()).isEqualTo("댓글");
+    }
+
+    @Test
+    void findAll() throws Exception {
+        //given
+        User user = User.builder()
+                .username("wss3325")
+                .password("1234")
+                .grade(Role.USER)
+                .nickname("seop")
+                .build();
+        userRepository.save(user);
+        Post post = Post.builder()
+                .user(user)
+                .title("제목")
+                .content("내용")
+                .build();
+        Post savedPost = postRepository.save(post);
+
+        Comment comment1 = Comment.builder()
+                .user(user)
+                .post(savedPost)
+                .parent(null)
+                .content("댓글1")
+                .build();
+        Comment comment2 = Comment.builder()
+                .user(user)
+                .post(savedPost)
+                .parent(comment1)
+                .content("댓글2")
+                .build();
+        Comment comment3 = Comment.builder()
+                .user(user)
+                .post(savedPost)
+                .parent(comment1)
+                .content("댓글3")
+                .build();
+        commentRepository.saveAll(List.of(comment1,comment2,comment3));
+
+        commentRepository.flush();
+        postRepository.flush();
+
+        em.clear();
+        //when
+        List<CommentDto> result = commentService.findAll(post.getId());
+
+        //then
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(0).getContent()).isEqualTo("댓글1");
+        assertThat(result.get(0).getChildren().get(0).getContent()).isEqualTo("댓글2");
+    }
+
+    @DisplayName("자식댓글이 있는 부모댓글을 삭제하면 부모댓글은 삭제되지 않고 삭제된 것으로 표시된다.")
+    @Test
+    void delete() throws Exception {
+        //given
+        User user = User.builder()
+                .username("wss3325")
+                .password("1234")
+                .grade(Role.USER)
+                .nickname("seop")
+                .build();
+        userRepository.save(user);
+        Post post = Post.builder()
+                .user(user)
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        Comment comment1 = Comment.builder()
+                .user(user)
+                .post(post)
+                .parent(null)
+                .content("댓글1")
+                .build();
+        Comment comment2 = Comment.builder()
+                .user(user)
+                .post(post)
+                .parent(comment1)
+                .content("댓글1")
+                .build();
+        commentRepository.saveAll(List.of(comment1, comment2));
+        commentRepository.flush();
+
+        em.clear();
+        //when
+        commentService.deleteComment(comment1.getId(), user.getUsername());
+
+        //then
+        Optional<Comment> result = commentRepository.findById(comment1.getId());
+        assertThat(result).isPresent();
+        assertThat(result.get().isDeleted()).isTrue();
+    }
+
+    @Test
+    void update() throws Exception {
+        //given
+        User user = User.builder()
+                .username("wss3325")
+                .password("1234")
+                .grade(Role.USER)
+                .nickname("seop")
+                .build();
+        userRepository.save(user);
+        Post post = Post.builder()
+                .user(user)
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+        Comment comment = Comment.builder()
+                .user(user)
+                .post(post)
+                .parent(null)
+                .content("댓글1")
+                .build();
+        commentRepository.save(comment);
+
+        //when
+        commentService.updateComment("수정된 댓글", comment.getId(), user.getUsername());
+
+        //then
+        assertThat(comment.getContent()).isEqualTo("수정된 댓글");
+    }
+}
