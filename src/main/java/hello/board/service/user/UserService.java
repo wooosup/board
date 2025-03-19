@@ -1,5 +1,6 @@
 package hello.board.service.user;
 
+import hello.board.controller.user.response.UserResponse;
 import hello.board.service.comment.dto.CommentDto;
 import hello.board.service.post.dto.MyPagePostDto;
 import hello.board.domain.entity.user.User;
@@ -28,14 +29,14 @@ public class UserService {
     private final EntityFinder entityFinder;
 
     @Transactional
-    public Long saveUser(UserForm form) {
+    public UserResponse saveUser(UserForm form) {
         duplicate(form);
 
         String encodedPassword = bCryptPasswordEncoder.encode(form.getPassword());
         User savedUser = form.toEntity(encodedPassword);
 
         userRepository.save(savedUser);
-        return savedUser.getId();
+        return UserResponse.of(savedUser);
     }
 
     public UserPostsAndCommentsDto getUserPostsAndComments(String username) {
