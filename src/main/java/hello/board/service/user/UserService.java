@@ -43,10 +43,9 @@ public class UserService {
         User user = entityFinder.getLoginUser(username);
 
         List<MyPagePostDto> posts = getMyPagePostDto(user);
-
         List<CommentDto> comments = getCommentDto(user);
 
-        return new UserPostsAndCommentsDto(posts, comments);
+        return UserPostsAndCommentsDto.of(posts, comments);
     }
 
     // 입력 폼 검증

@@ -42,7 +42,7 @@ public class UserController {
 
     @GetMapping("/signup")
     public String signupForm(Model model) {
-        model.addAttribute("form", new UserForm());
+        model.addAttribute("form", UserForm.builder().build());
         return "users/signup";
     }
 
