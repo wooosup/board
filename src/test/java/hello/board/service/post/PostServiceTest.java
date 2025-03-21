@@ -83,6 +83,31 @@ class PostServiceTest {
     }
 
     @Test
+    void findPostForm() throws Exception {
+        //given
+        User user = User.builder()
+                .username("wss3325")
+                .nickname("keke")
+                .password("1234")
+                .grade(Role.USER)
+                .build();
+        userRepository.save(user);
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .user(user)
+                .build();
+        postRepository.save(post);
+
+        //when
+        UpdatePostForm result = postService.findPostForm(post.getId());
+
+        //then
+        assertThat(result.getTitle()).isEqualTo("제목");
+        assertThat(result.getContent()).isEqualTo("내용");
+    }
+
+    @Test
     void findPostException() throws Exception {
         //given
         Long postId = 1L;
@@ -121,5 +146,29 @@ class PostServiceTest {
         //then
         assertThat(response.getTitle()).isEqualTo("수정된 제목");
         assertThat(response.getContent()).isEqualTo("수정된 내용");
+    }
+
+    @Test
+    void delete() throws Exception {
+        //given
+        User user = User.builder()
+                .username("wss3325")
+                .nickname("keke")
+                .password("1234")
+                .grade(Role.USER)
+                .build();
+        userRepository.save(user);
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .user(user)
+                .build();
+        postRepository.save(post);
+
+        //when
+        postService.deletePost(post.getId(), user.getUsername());
+
+        //then
+        assertThat(postRepository.findById(post.getId())).isEmpty();
     }
 }
