@@ -82,7 +82,7 @@ class PostControllerTest {
 
     @DisplayName("게시글을 작성한다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void write() throws Exception {
         //given
         // when & then
@@ -98,7 +98,7 @@ class PostControllerTest {
 
     @DisplayName("제목없이 게시글을 작성하면 오류가 발생한다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void writePostEmptyTitle() throws Exception {
         //given
         // when & then
@@ -116,7 +116,7 @@ class PostControllerTest {
 
     @DisplayName("존재하지 않는 게시글은 조회할 수 없다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void viewPostNotExistence() throws Exception {
         //given
         // when & then
@@ -129,7 +129,7 @@ class PostControllerTest {
 
     @DisplayName("게시글을 조회한다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void viewPost() throws Exception {
         //given
         // when & then
@@ -146,7 +146,7 @@ class PostControllerTest {
 
     @DisplayName("게시글을 수정한다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void updatePost() throws Exception {
         //given
         UpdatePostForm updatePostForm = UpdatePostForm.builder()
@@ -182,7 +182,7 @@ class PostControllerTest {
 
     @DisplayName("게시글 수정 페이지를 보여준다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void updatePostForm() throws Exception {
         //given
         //when & then
@@ -197,7 +197,7 @@ class PostControllerTest {
 
     @DisplayName("게시글을 삭제한다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void delete() throws Exception {
         //given
         //when & then
@@ -210,7 +210,7 @@ class PostControllerTest {
 
     @DisplayName("게시글을 작성하면 DB에 저장된다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void writePost() throws Exception {
         //given
         String title = "제목";
@@ -240,7 +240,7 @@ class PostControllerTest {
 
     @DisplayName("게시글에 이미지를 업로드 할 수 있다.")
     @Test
-    @WithMockUser(username = "wss3325")
+    @WithMockUser(username = "12345")
     void imageUpload() throws Exception {
         // given
         MockMultipartFile image = new MockMultipartFile(

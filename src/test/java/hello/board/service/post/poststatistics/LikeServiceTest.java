@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest
+@Transactional
 class LikeServiceTest {
 
     @Autowired
@@ -27,7 +28,6 @@ class LikeServiceTest {
 
     @DisplayName("게시글 좋아요")
     @Test
-    @Transactional
     void like() throws Exception {
         //given
         User user = User.builder()

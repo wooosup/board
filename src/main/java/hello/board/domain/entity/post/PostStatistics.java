@@ -16,15 +16,15 @@ public class PostStatistics implements Serializable {
 
     @Id
     private String postId;
-    private Integer viewCount;
+    private Integer viewCount = 0;
 
     @Builder
-    private PostStatistics(String postId,Integer viewCount) {
+    private PostStatistics(String postId, Integer viewCount) {
         this.postId = postId;
-        this.viewCount = viewCount;
+        this.viewCount = (viewCount == null) ? 0 : viewCount;
     }
 
     public void increaseViewCount() {
-        this.viewCount = (this.viewCount == null) ? 1 : this.viewCount + 1;
+        this.viewCount++;
     }
 }

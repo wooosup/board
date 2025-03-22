@@ -54,8 +54,8 @@ class PostQueryRepositoryTest {
         Page<MainPostDto> result = postQueryRepository.searchPosts(search, pageable);
 
         //then
-        assertThat(result.getTotalElements()).isEqualTo(20);
-        assertThat(result.getTotalPages()).isEqualTo(2);
+        assertThat(result.getTotalElements()).isEqualTo(21); // DB에 들어가있는 게시글 + 1
+        assertThat(result.getTotalPages()).isEqualTo(3);
         assertThat(result.getContent().get(0).getTitle()).isEqualTo("제목19");
     }
 

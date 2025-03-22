@@ -110,7 +110,7 @@ class PostServiceTest {
     @Test
     void findPostException() throws Exception {
         //given
-        Long postId = 1L;
+        Long postId = 999L;
 
         // expect
         assertThatThrownBy(() -> postService.findByPostId(postId, new MockHttpServletRequest()))
