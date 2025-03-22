@@ -1,6 +1,7 @@
 package hello.board.service.post;
 
 import hello.board.controller.post.response.PostResponse;
+import hello.board.controller.post.response.PostWithCommentsDto;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.post.PostStatistics;
 import hello.board.domain.entity.post.image.Image;
@@ -10,6 +11,8 @@ import hello.board.domain.repository.PostRepository;
 import hello.board.domain.repository.PostStatisticsRepository;
 import hello.board.exception.ImageException;
 import hello.board.service.EntityFinder;
+import hello.board.service.comment.CommentService;
+import hello.board.service.comment.dto.CommentDto;
 import hello.board.service.image.ImageService;
 import hello.board.service.image.dto.ImageDto;
 import hello.board.service.post.dto.*;
@@ -36,6 +39,7 @@ public class PostService {
     private final PostQueryRepository postQueryRepository;
     private final PostStatisticsRepository postStatisticsRepository;
     private final ViewService viewService;
+    private final CommentService commentService;
 
     @Transactional
     public PostResponse savePost(PostForm form, List<MultipartFile> imageFiles, String loginId) {
@@ -62,6 +66,13 @@ public class PostService {
         Integer viewCount = viewService.getViewCount(postId);
 
         return PostDetailDto.of(post, viewCount, likeCount);
+    }
+
+    public PostWithCommentsDto findPostWithComments(Long postId, HttpServletRequest request) {
+        PostDetailDto postDetail = findByPostId(postId, request);
+        List<CommentDto> comments = commentService.findAll(postId);
+
+        return PostWithCommentsDto.of(postDetail, comments);
     }
 
     public UpdatePostForm findPostForm(Long postId) {

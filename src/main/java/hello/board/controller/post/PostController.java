@@ -1,8 +1,7 @@
 package hello.board.controller.post;
 
 import hello.board.controller.post.response.PostResponse;
-import hello.board.service.comment.CommentService;
-import hello.board.service.comment.dto.CommentDto;
+import hello.board.controller.post.response.PostWithCommentsDto;
 import hello.board.service.comment.dto.CommentForm;
 import hello.board.service.post.PostService;
 import hello.board.service.post.dto.*;
@@ -27,7 +26,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final CommentService commentService;
 
     @GetMapping("/")
     public String postList(@RequestParam(value = "keyword", required = false) String keyword,
@@ -77,10 +75,10 @@ public class PostController {
     @GetMapping("/post/{postId}")
     public String viewPost(@PathVariable Long postId, Model model, HttpServletRequest request) {
         PostDetailDto postDetail = postService.findByPostId(postId, request);
-        List<CommentDto> comments = commentService.findAll(postId);
+        PostWithCommentsDto postWithComments = postService.findPostWithComments(postId, request);
 
         model.addAttribute("post", postDetail);
-        model.addAttribute("comments", comments);
+        model.addAttribute("comments", postWithComments.getComments());
         model.addAttribute("commentForm", CommentForm.builder().build());
         return "posts/viewPost";
     }
