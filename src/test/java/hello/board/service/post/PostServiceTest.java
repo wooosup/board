@@ -1,36 +1,21 @@
 package hello.board.service.post;
 
+import hello.board.IntegrationTestSupport;
 import hello.board.controller.post.response.PostResponse;
 import hello.board.domain.Role;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
-import hello.board.domain.repository.PostRepository;
-import hello.board.domain.repository.UserRepository;
 import hello.board.exception.EntityNotFoundException;
 import hello.board.service.post.dto.PostDetailDto;
 import hello.board.service.post.dto.PostForm;
 import hello.board.service.post.dto.UpdatePostForm;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@Transactional
-class PostServiceTest {
-
-    @Autowired
-    private PostService postService;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+class PostServiceTest extends IntegrationTestSupport {
 
     @Test
     void savePost() throws Exception {

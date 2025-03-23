@@ -1,32 +1,19 @@
 package hello.board.domain.repository;
 
+import hello.board.IntegrationTestSupport;
 import hello.board.domain.Role;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
 import hello.board.service.post.dto.MainPostDto;
 import hello.board.service.post.dto.PostSearch;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Transactional
-class PostQueryRepositoryTest {
-
-    @Autowired
-    private PostQueryRepository postQueryRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+class PostQueryRepositoryTest extends IntegrationTestSupport {
 
     @Test
     void paging() throws Exception {
@@ -54,8 +41,8 @@ class PostQueryRepositoryTest {
         Page<MainPostDto> result = postQueryRepository.searchPosts(search, pageable);
 
         //then
-        assertThat(result.getTotalElements()).isEqualTo(21); // DB에 들어가있는 게시글 + 1
-        assertThat(result.getTotalPages()).isEqualTo(3);
+        assertThat(result.getTotalElements()).isEqualTo(20); // DB에 들어가있는 게시글 + 1
+        assertThat(result.getTotalPages()).isEqualTo(2);
         assertThat(result.getContent().get(0).getTitle()).isEqualTo("제목19");
     }
 

@@ -1,30 +1,14 @@
 package hello.board.service.post.poststatistics;
 
+import hello.board.IntegrationTestSupport;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
-import hello.board.domain.repository.PostRepository;
-import hello.board.domain.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-@SpringBootTest
-@Transactional
-class LikeServiceTest {
-
-    @Autowired
-    private LikeService likeService;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+class LikeServiceTest extends IntegrationTestSupport {
 
     @DisplayName("게시글 좋아요")
     @Test

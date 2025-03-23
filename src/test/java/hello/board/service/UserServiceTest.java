@@ -1,38 +1,18 @@
 package hello.board.service;
 
+import hello.board.IntegrationTestSupport;
 import hello.board.domain.entity.comment.Comment;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
-import hello.board.domain.repository.CommentRepository;
-import hello.board.domain.repository.PostRepository;
-import hello.board.domain.repository.UserRepository;
-import hello.board.service.user.UserService;
 import hello.board.service.user.dto.UserForm;
 import hello.board.service.user.dto.UserPostsAndCommentsDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@Transactional
-class UserServiceTest {
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
+class UserServiceTest extends IntegrationTestSupport {
 
 
     @DisplayName("아이디 중복 검사")

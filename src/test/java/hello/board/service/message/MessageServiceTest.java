@@ -1,28 +1,17 @@
 package hello.board.service.message;
 
+import hello.board.IntegrationTestSupport;
 import hello.board.domain.Role;
+import hello.board.domain.entity.user.User;
 import hello.board.service.message.dto.MessageDto;
 import hello.board.service.message.dto.MessageForm;
-import hello.board.domain.entity.user.User;
-import hello.board.domain.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Transactional
-class MessageServiceTest {
-
-    @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private UserRepository userRepository;
+class MessageServiceTest extends IntegrationTestSupport {
 
     @Test
     void sendMessage() throws Exception {

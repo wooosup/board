@@ -1,45 +1,24 @@
 package hello.board.service.comment;
 
+import hello.board.IntegrationTestSupport;
 import hello.board.controller.comment.response.CommentResponse;
 import hello.board.domain.Role;
 import hello.board.domain.entity.comment.Comment;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
-import hello.board.domain.repository.CommentRepository;
-import hello.board.domain.repository.PostRepository;
-import hello.board.domain.repository.UserRepository;
 import hello.board.service.comment.dto.CommentDto;
 import hello.board.service.comment.dto.CommentForm;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Transactional
-class CommentServiceTest {
+class CommentServiceTest extends IntegrationTestSupport {
 
-    @Autowired
-    private CommentService commentService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
-    private EntityManager em;
 
     @Test
     void save() throws Exception {
