@@ -4,16 +4,15 @@ import hello.board.controller.post.response.PostResponse;
 import hello.board.controller.post.response.PostWithCommentsDto;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.post.PostStatistics;
-import hello.board.domain.entity.post.image.Image;
 import hello.board.domain.entity.user.User;
 import hello.board.domain.repository.PostQueryRepository;
 import hello.board.domain.repository.PostRepository;
 import hello.board.domain.repository.PostStatisticsRepository;
-import hello.board.exception.ImageException;
 import hello.board.service.EntityFinder;
 import hello.board.service.comment.CommentService;
 import hello.board.service.comment.dto.CommentDto;
 import hello.board.service.image.ImageService;
+import hello.board.service.image.PostImageManager;
 import hello.board.service.image.dto.ImageDto;
 import hello.board.service.post.dto.*;
 import hello.board.service.post.poststatistics.ViewService;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -40,6 +38,7 @@ public class PostService {
     private final PostStatisticsRepository postStatisticsRepository;
     private final ViewService viewService;
     private final CommentService commentService;
+    private final PostImageManager postImageManager;
 
     @Transactional
     public PostResponse savePost(PostForm form, List<MultipartFile> imageFiles, String loginId) {
@@ -48,8 +47,8 @@ public class PostService {
         Post post = form.toEntity(loginUser);
         Post savedPost = postRepository.save(post);
 
-        if (isImageHaveBy(imageFiles)) {
-            saveImagesToPost(imageFiles, post);
+        if (postImageManager.hasImageFiles(imageFiles)) {
+            postImageManager.saveImagesToPost(imageFiles, post);
         }
 
         createPostStatistics(savedPost.getId());
@@ -95,11 +94,11 @@ public class PostService {
 
         checkAuthorization(post.getUser(), loginUser);
 
-        if (isImageDeleteBy(imageIdsToDelete)) {
-            deleteSelectedImages(post, imageIdsToDelete);
+        if (postImageManager.isImageDeleteBy(imageIdsToDelete)) {
+            postImageManager.deleteSelectedImages(post, imageIdsToDelete);
         }
-        if (isImageHaveBy(imageFiles)) {
-            saveImagesToPost(imageFiles, post);
+        if (postImageManager.hasImageFiles(imageFiles)) {
+            postImageManager.saveImagesToPost(imageFiles, post);
         }
         post.updatePost(form.getTitle(), form.getContent());
 
@@ -113,7 +112,7 @@ public class PostService {
 
         checkAuthorization(post.getUser(), loginUser);
 
-        deleteAllImages(post);
+        postImageManager.deleteAllImages(post);
         postRepository.delete(post);
     }
 
@@ -127,51 +126,6 @@ public class PostService {
                 .viewCount(0)
                 .build();
         postStatisticsRepository.save(statistics);
-    }
-
-    private static boolean isImageDeleteBy(List<Long> imageIdsToDelete) {
-        return imageIdsToDelete != null && !imageIdsToDelete.isEmpty();
-    }
-
-    private static boolean isImageHaveBy(List<MultipartFile> imageFiles) {
-        return imageFiles != null && !imageFiles.isEmpty();
-    }
-
-    private void saveImagesToPost(List<MultipartFile> imageFiles, Post post) {
-        for (MultipartFile file : imageFiles) {
-            if (!file.isEmpty()) {
-                try {
-                    Image image = imageService.saveImage(file);
-                    image.setPost(post);
-                    post.addImage(image);
-                } catch (IOException e) {
-                    throw new ImageException("이미지 저장에 실패했습니다.");
-                }
-            }
-        }
-    }
-
-    private void deleteSelectedImages(Post post, List<Long> imageIdsToDelete) {
-        post.getImages().removeIf(image -> {
-            boolean isToDelete = imageIdsToDelete.contains(image.getId());
-            if (isToDelete) {
-                deleteImageSafely(image.getId());
-            }
-            return isToDelete;
-        });
-    }
-
-    private void deleteAllImages(Post post) {
-        post.getImages().forEach(image -> deleteImageSafely(image.getId()));
-        post.getImages().clear();
-    }
-
-    private void deleteImageSafely(Long imageId) {
-        try {
-            imageService.deleteImage(imageId);
-        } catch (IOException e) {
-            throw new ImageException("이미지 삭제에 실패했습니다.");
-        }
     }
 
     private void checkAuthorization(User postOwner, User loginUser) {
