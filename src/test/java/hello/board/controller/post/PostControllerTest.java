@@ -1,10 +1,11 @@
-package hello.board.controller;
+package hello.board.controller.post;
 
 import hello.board.domain.Role;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
 import hello.board.domain.repository.PostRepository;
 import hello.board.domain.repository.UserRepository;
+import hello.board.service.image.FileStore;
 import hello.board.service.post.PostService;
 import hello.board.service.post.dto.MainPostDto;
 import hello.board.service.post.dto.PostSearch;
@@ -15,11 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
 class PostControllerTest {
 
     @Autowired
@@ -46,6 +50,9 @@ class PostControllerTest {
 
     @Autowired
     private PostService postService;
+
+    @MockBean
+    private FileStore fileStore;
 
     @BeforeEach
     void setUp() {
