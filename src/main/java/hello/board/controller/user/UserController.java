@@ -47,19 +47,20 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Validated @ModelAttribute("form") UserForm form, BindingResult result, RedirectAttributes redirect) {
+    public String signup(@Validated @ModelAttribute("form") UserForm form,
+                         BindingResult result,
+                         RedirectAttributes redirect) {
         if (result.hasErrors()) {
             return "users/signup";
         }
 
-        duplicateUser(form, result);
-        if (result.hasErrors()) {
+        if (!validationUserForm(form, result)) {
             return "users/signup";
         }
 
-        userService.saveUser(form);
+        registerUser(form);
 
-        redirect.addFlashAttribute("successMessage", "회원가입이 완료되었습니다!");
+        setUpSuccessRedirect(redirect);
         return "redirect:/login";
     }
 
@@ -72,25 +73,38 @@ public class UserController {
     @GetMapping("/mypage")
     public String myPage(Model model, Principal pri) {
         String username = pri.getName();
+
+        // 사용자 게시글 및 댓글 조회
         UserPostsAndCommentsDto userContent = userService.getUserPostsAndComments(username);
         model.addAttribute("posts", userContent.getPosts());
         model.addAttribute("comments", userContent.getComments());
 
+        // 받은 메시지 조회
         List<MessageDto> receivedMessages = messageService.getReceivedMessages(username);
         model.addAttribute("receivedMessages", receivedMessages);
 
+        // 보낸 메시지 조회
         List<MessageDto> sentMessages = messageService.getSentMessages(username);
         model.addAttribute("sentMessages", sentMessages);
 
         return "users/mypage";
     }
 
-    private void duplicateUser(UserForm form, BindingResult result) {
+    private static void setUpSuccessRedirect(RedirectAttributes redirect) {
+        redirect.addFlashAttribute("successMessage", "회원가입이 완료되었습니다!");
+    }
+
+    private void registerUser(UserForm form) {
+        userService.saveUser(form);
+    }
+
+    private boolean validationUserForm(UserForm form, BindingResult result) {
         if (userService.isUsernameDuplicate(form.getUsername())) {
             result.rejectValue("username", "duplicate", "이미 존재하는 아이디입니다.");
         }
         if (userService.isNicknameDuplicate(form.getNickname())) {
             result.rejectValue("nickname", "duplicate", "이미 존재하는 닉네임입니다.");
         }
+        return !result.hasErrors();
     }
 }
