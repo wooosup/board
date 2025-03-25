@@ -43,14 +43,10 @@ public class PostService {
     @Transactional
     public PostResponse savePost(PostForm form, List<MultipartFile> imageFiles, String loginId) {
         User loginUser = entityFinder.getLoginUser(loginId);
-
         Post post = form.toEntity(loginUser);
         Post savedPost = postRepository.save(post);
 
-        if (postImageManager.hasImageFiles(imageFiles)) {
-            postImageManager.saveImagesToPost(imageFiles, post);
-        }
-
+        processImages(imageFiles, post);
         createPostStatistics(savedPost.getId());
 
         return PostResponse.of(savedPost);
@@ -58,9 +54,12 @@ public class PostService {
 
     public PostDetailDto findByPostId(Long postId, HttpServletRequest request) {
         Post post = entityFinder.getPost(postId);
+        updateViewCount(postId, request);
 
-        viewService.handleView(postId, request);
+        return createPostDetailDto(postId, post);
+    }
 
+    private PostDetailDto createPostDetailDto(Long postId, Post post) {
         Integer likeCount = post.getLikeCount();
         Integer viewCount = viewService.getViewCount(postId);
 
@@ -92,15 +91,9 @@ public class PostService {
         Post post = entityFinder.getPost(postId);
         User loginUser = entityFinder.getLoginUser(loginId);
 
-        checkAuthorization(post.getUser(), loginUser);
-
-        if (postImageManager.isImageDeleteBy(imageIdsToDelete)) {
-            postImageManager.deleteSelectedImages(post, imageIdsToDelete);
-        }
-        if (postImageManager.hasImageFiles(imageFiles)) {
-            postImageManager.saveImagesToPost(imageFiles, post);
-        }
-        post.updatePost(form.getTitle(), form.getContent());
+        validatePostOwnership(post.getUser(), loginUser);
+        processImageUpdates(imageFiles, imageIdsToDelete, post);
+        updatePostContent(form, post);
 
         return PostResponse.of(post);
     }
@@ -110,14 +103,36 @@ public class PostService {
         Post post = entityFinder.getPost(id);
         User loginUser = entityFinder.getLoginUser(loginId);
 
-        checkAuthorization(post.getUser(), loginUser);
-
+        validatePostOwnership(post.getUser(), loginUser);
         postImageManager.deleteAllImages(post);
         postRepository.delete(post);
     }
 
     public Page<MainPostDto> searchPosts(PostSearch search, Pageable page) {
         return postQueryRepository.searchPosts(search, page);
+    }
+
+    private void processImages(List<MultipartFile> imageFiles, Post post) {
+        if (postImageManager.hasImageFiles(imageFiles)) {
+            postImageManager.saveImagesToPost(imageFiles, post);
+        }
+    }
+
+    private void updateViewCount(Long postId, HttpServletRequest request) {
+        viewService.handleView(postId, request);
+    }
+
+    private static void updatePostContent(UpdatePostForm form, Post post) {
+        post.updatePost(form.getTitle(), form.getContent());
+    }
+
+    private void processImageUpdates(List<MultipartFile> imageFiles, List<Long> imageIdsToDelete, Post post) {
+        if (postImageManager.isImageDeleteBy(imageIdsToDelete)) {
+            postImageManager.deleteSelectedImages(post, imageIdsToDelete);
+        }
+        if (postImageManager.hasImageFiles(imageFiles)) {
+            postImageManager.saveImagesToPost(imageFiles, post);
+        }
     }
 
     private void createPostStatistics(Long postId) {
@@ -128,9 +143,9 @@ public class PostService {
         postStatisticsRepository.save(statistics);
     }
 
-    private void checkAuthorization(User postOwner, User loginUser) {
-        if (!postOwner.equals(loginUser)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+    private void validatePostOwnership(User postOwner, User currentUser) {
+        if (!postOwner.equals(currentUser)) {
+            throw new IllegalArgumentException("이 게시글을 수정할 권한이 없습니다.");
         }
     }
 }
