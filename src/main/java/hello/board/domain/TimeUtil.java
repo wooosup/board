@@ -12,6 +12,10 @@ public class TimeUtil {
     private static final PrettyTime PRETTY_TIME = new PrettyTime(Locale.KOREAN);
 
     public static String getTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return "";
+        }
+
         Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
         return PRETTY_TIME.format(date);
     }

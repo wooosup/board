@@ -33,7 +33,7 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
-    public void deleteImage(Long imageId) throws IOException {
+    public void deleteImage(Long imageId) {
         Image image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new IllegalArgumentException("이미지가 존재하지 않습니다."));
 

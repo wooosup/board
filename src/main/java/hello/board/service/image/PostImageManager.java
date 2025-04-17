@@ -2,7 +2,7 @@ package hello.board.service.image;
 
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.post.image.Image;
-import hello.board.exception.ImageException;
+import hello.board.exception.ImageUploadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +32,7 @@ public class PostImageManager {
                     image.setPost(post);
                     post.addImage(image);
                 } catch (IOException e) {
-                    throw new ImageException("이미지 저장에 실패했습니다.");
+                    throw new ImageUploadException("이미지 저장에 실패했습니다." + file.getOriginalFilename(), e);
                 }
             }
         }
