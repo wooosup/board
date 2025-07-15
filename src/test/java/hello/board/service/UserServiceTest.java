@@ -5,6 +5,7 @@ import hello.board.domain.entity.comment.Comment;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
 import hello.board.service.user.dto.UserForm;
+import hello.board.service.user.dto.UserLikedPostsDto;
 import hello.board.service.user.dto.UserPostsAndCommentsDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,5 +89,31 @@ class UserServiceTest extends IntegrationTestSupport {
         //then
         assertThat(result.getPosts().get(0).getTitle()).isEqualTo("제목");
         assertThat(result.getComments().get(0).getContent()).isEqualTo("댓글");
+    }
+
+    @DisplayName("좋아요 누른 글 조회")
+    @Test
+    void getLikedPosts() throws Exception {
+        //given
+        User user = User.builder()
+                .username("wss3325")
+                .password("12345")
+                .nickname("sup")
+                .build();
+        userRepository.save(user);
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .user(user)
+                .build();
+        postRepository.save(post);
+
+        likeService.likePost(post.getId(), user.getUsername());
+
+        //when
+        UserLikedPostsDto likedPosts = userService.getUserLikedPosts(user.getUsername());
+
+        //then
+        assertThat(likedPosts.getLikedPosts().get(0).getTitle()).isEqualTo("제목");
     }
 }
