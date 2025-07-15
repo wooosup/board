@@ -2,6 +2,7 @@ package hello.board.controller.user;
 
 import hello.board.service.message.dto.MessageDto;
 import hello.board.service.user.dto.UserForm;
+import hello.board.service.user.dto.UserLikedPostsDto;
 import hello.board.service.user.dto.UserPostsAndCommentsDto;
 import hello.board.service.message.MessageService;
 import hello.board.service.user.UserService;
@@ -27,6 +28,10 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class UserController {
+    public static final String USERS_SIGNUP = "users/signup";
+    public static final String REDIRECT_LOGIN = "redirect:/login";
+    public static final String USERS_LOGIN_FORM = "users/loginForm";
+    public static final String USERS_MYPAGE = "users/mypage";
 
     private final UserService userService;
     private final MessageService messageService;
@@ -37,13 +42,13 @@ public class UserController {
         if (error != null) {
             model.addAttribute("errorMessage", "로그인 정보가 없습니다. 확인 후 다시 입력해 주십시오.");
         }
-        return "users/loginForm";
+        return USERS_LOGIN_FORM;
     }
 
     @GetMapping("/signup")
     public String signupForm(Model model) {
         model.addAttribute("form", UserForm.builder().build());
-        return "users/signup";
+        return USERS_SIGNUP;
     }
 
     @PostMapping("/signup")
@@ -51,23 +56,23 @@ public class UserController {
                          BindingResult result,
                          RedirectAttributes redirect) {
         if (result.hasErrors()) {
-            return "users/signup";
+            return USERS_SIGNUP;
         }
 
         if (!validationUserForm(form, result)) {
-            return "users/signup";
+            return USERS_SIGNUP;
         }
 
         registerUser(form);
 
         setUpSuccessRedirect(redirect);
-        return "redirect:/login";
+        return REDIRECT_LOGIN;
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/login";
+        return REDIRECT_LOGIN;
     }
 
     @GetMapping("/mypage")
@@ -79,6 +84,10 @@ public class UserController {
         model.addAttribute("posts", userContent.getPosts());
         model.addAttribute("comments", userContent.getComments());
 
+        // 좋아요 누른 글 조회
+        UserLikedPostsDto userLikedPosts = userService.getUserLikedPosts(username);
+        model.addAttribute("likedPosts", userLikedPosts.getLikedPosts());
+
         // 받은 메시지 조회
         List<MessageDto> receivedMessages = messageService.getReceivedMessages(username);
         model.addAttribute("receivedMessages", receivedMessages);
@@ -87,7 +96,7 @@ public class UserController {
         List<MessageDto> sentMessages = messageService.getSentMessages(username);
         model.addAttribute("sentMessages", sentMessages);
 
-        return "users/mypage";
+        return USERS_MYPAGE;
     }
 
     private static void setUpSuccessRedirect(RedirectAttributes redirect) {

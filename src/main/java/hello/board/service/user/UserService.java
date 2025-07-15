@@ -1,10 +1,14 @@
 package hello.board.service.user;
 
 import hello.board.controller.user.response.UserResponse;
+import hello.board.domain.entity.like.Like;
+import hello.board.domain.repository.LikeRepository;
 import hello.board.service.comment.dto.CommentDto;
+import hello.board.service.post.dto.LikedPostDto;
 import hello.board.service.post.dto.MyPagePostDto;
 import hello.board.domain.entity.user.User;
 import hello.board.service.user.dto.UserForm;
+import hello.board.service.user.dto.UserLikedPostsDto;
 import hello.board.service.user.dto.UserPostsAndCommentsDto;
 import hello.board.domain.repository.CommentRepository;
 import hello.board.domain.repository.PostRepository;
@@ -25,6 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final EntityFinder entityFinder;
 
@@ -46,6 +51,15 @@ public class UserService {
         List<CommentDto> comments = getCommentDto(user);
 
         return UserPostsAndCommentsDto.of(posts, comments);
+    }
+
+    public UserLikedPostsDto getUserLikedPosts(String username) {
+        User user = entityFinder.getLoginUser(username);
+        List<Like> userLikes = likeRepository.findByUserOrderByCreateDateTimeDesc(user);
+
+        List<LikedPostDto> likePosts = getLikePosts(userLikes);
+
+        return UserLikedPostsDto.of(likePosts);
     }
 
     // 입력 폼 검증
@@ -71,10 +85,15 @@ public class UserService {
                 .toList();
     }
 
+    private static List<LikedPostDto> getLikePosts(List<Like> userLikes) {
+        return userLikes.stream()
+                .map(LikedPostDto::of)
+                .toList();
+    }
+
     private List<CommentDto> getCommentDto(User user) {
         return commentRepository.findByUserOrderByCreateDateTimeDesc(user).stream()
                 .map(CommentDto::of)
                 .toList();
     }
-
 }
