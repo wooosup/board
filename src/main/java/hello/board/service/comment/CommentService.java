@@ -65,10 +65,11 @@ public class CommentService {
         if (hasChildren(findComment)) {
             findComment.markAsDeleted();
             removeParentIfPossible(findComment);
-        } else {
-            commentRepository.delete(findComment);
-            removeParentIfPossible(findComment.getParent());
+            return;
         }
+
+        commentRepository.delete(findComment);
+        removeParentIfPossible(findComment.getParent());
     }
 
     private void removeParentIfPossible(Comment parent) {
