@@ -1,43 +1,56 @@
-package hello.board;
-
-import hello.board.domain.repository.MessageRepository;
-import hello.board.domain.repository.PostRepository;
-import hello.board.domain.repository.UserRepository;
-import hello.board.service.image.FileStore;
-import hello.board.service.post.PostService;
-import hello.board.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-
-@AutoConfigureMockMvc
-@SpringBootTest
-@Transactional
-@ActiveProfiles("test")
-public class ControllerTestSupport {
-
-    @Autowired
-    protected MockMvc mockMvc;
-
-    @Autowired
-    protected PostService postService;
-
-    @Autowired
-    protected UserService userService;
-
-    @Autowired
-    protected UserRepository userRepository;
-
-    @Autowired
-    protected PostRepository postRepository;
-
-    @Autowired
-    protected MessageRepository messageRepository;
-
-    @MockBean
-    protected FileStore fileStore;
-}
+//package hello.board;
+//
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import hello.board.controller.post.PostController;
+//import hello.board.controller.user.UserController;
+//import hello.board.service.comment.CommentService;
+//import hello.board.service.image.FileStore;
+//import hello.board.service.post.PostService;
+//import hello.board.service.user.UserService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+//import org.springframework.boot.test.mock.mockito.MockBean;
+//import org.springframework.test.web.servlet.MockMvc;
+//
+////@AutoConfigureMockMvc
+////@SpringBootTest
+////@Transactional
+////@ActiveProfiles("test")
+//@WebMvcTest(controllers = {
+//        PostController.class,
+//        UserController.class
+//})
+//public abstract class ControllerTestSupport {
+//
+//    @Autowired
+//    protected MockMvc mockMvc;
+//
+//    @Autowired
+//    protected ObjectMapper objectMapper;
+//
+//    @MockBean
+//    protected PostService postService;
+//
+//    @MockBean
+//    protected UserService userService;
+//
+//    @MockBean
+//    protected CommentService commentService;
+////    @Autowired
+////    protected PostService postService;
+////
+////    @Autowired
+////    protected UserService userService;
+////
+////    @Autowired
+////    protected UserRepository userRepository;
+////
+////    @Autowired
+////    protected PostRepository postRepository;
+////
+////    @Autowired
+////    protected MessageRepository messageRepository;
+//
+//    @MockBean
+//    protected FileStore fileStore;
+//}
