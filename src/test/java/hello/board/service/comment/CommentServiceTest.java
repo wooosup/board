@@ -18,8 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CommentServiceTest extends IntegrationTestSupport {
 
-
-
     @Test
     void save() throws Exception {
         //given
