@@ -47,8 +47,9 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          source: "build/libs/*.jar" # 빌드된 JAR 파일 경로
-          target: "/home/ubuntu"     # EC2에 파일이 저장될 경로
+          source: "build/libs/!(*-plain).jar"
+          target: "/home/ubuntu"
+          strip_components: 2
 
       # EC2에 접속해서 배포 스크립트 실행
       - name: Deploy on EC2
@@ -59,4 +60,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             pgrep java | xargs kill -9
-            nohup java -jar -Dspring.profiles.active=prod /home/ubuntu/board/build/libs/*.jar > /home/ubuntu/application.log 2_>&_1 &
+            nohup java -jar -Dspring.profiles.active=prod /home/ubuntu/*.jar > /home/ubuntu/application.log 2>&1 &
