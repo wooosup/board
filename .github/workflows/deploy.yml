@@ -29,7 +29,13 @@ jobs:
 
       # Spring Boot 애플리케이션 빌드
       - name: Build with Gradle
-        run: ./gradlew build --info
+        run: ./gradlew build
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USER_NAME: ${{ secrets.DB_USER_NAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
 
       # 빌드된 JAR 파일을 EC2로 복사
       - name: Copy JAR to EC2
