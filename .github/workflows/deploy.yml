@@ -31,6 +31,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Build and test
+        run: ./gradlew clean build --info
+
       # 빌드된 JAR 파일을 EC2로 복사
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@master
