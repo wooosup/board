@@ -59,4 +59,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             pgrep java | xargs kill -9
-            nohup java -jar -Dspring.profiles.active=prod /home/ubuntu/*.jar > /home/ubuntu/application.log 2>&1 &
+            nohup java -jar -Dspring.profiles.active=prod /home/ubuntu/board/build/libs/*.jar > /home/ubuntu/application.log 2_>&_1 &
