@@ -55,7 +55,5 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            # 기존에 실행 중인 Java 프로세스 종료
             pgrep java | xargs kill -9
-            # 새로운 JAR 파일 실행
             nohup java -jar -Dspring.profiles.active=prod /home/ubuntu/*.jar > /home/ubuntu/application.log 2>&1 &
