@@ -1,400 +1,514 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title th:text="${post.title}">게시글 상세</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">게시글 상세</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <style>
-    /* 추가적인 커스텀 스타일링 */
-    body {
-      background-color: #f8f9fa;
-    }
-    .post-container {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      margin-top: 50px;
-      margin-bottom: 50px;
-    }
-    .post-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #343a40;
-      margin-bottom: 10px;
-    }
-    .post-meta {
-      font-size: 0.9rem;
-      color: #6c757d;
-    }
-    .post-author,
-    .post-date,
-    .post-views {
-      font-weight: bold;
-    }
-    .comment-section {
-      margin-top: 40px;
-    }
-    .comment {
-      padding: 15px;
-      border-bottom: 1px solid #dee2e6;
-    }
-    .comment:last-child {
-      border-bottom: none;
-    }
-    .comment-actions {
-      float: right;
-    }
-    .edit-comment-form {
-      display: none;
-      margin-top: 15px;
-    }
-    .img-fluid.custom-image {
-      max-width: 600px; /* 원하는 최대 너비 설정 */
-      width: 100%;
-      height: auto;
-    }
-    .like-section {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      margin-top: 10px;
-      gap: 8px;
-    }
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .post-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
 
-    /* 좋아요 버튼 */
-    .like-btn {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 2rem;
-      color: #d3d3d3; /* Default gray color */
-      transition: color 0.3s ease, transform 0.3s ease;
-      outline: none;
-    }
+        .post-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #343a40;
+            margin-bottom: 10px;
+        }
 
-    .like-btn:hover .like-heart {
-      color: #ff6b6b; /* Hover red color */
-    }
+        .post-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
 
-    .like-heart {
-      display: inline-block;
-      transition: transform 0.2s ease-in-out;
-    }
+        .post-author,
+        .post-date,
+        .post-views {
+            font-weight: bold;
+        }
 
-    .like-btn:active .like-heart {
-      transform: scale(1.2);
-    }
+        .comment-section {
+            margin-top: 40px;
+        }
 
-    /* 좋아요 개수 */
-    .like-count {
-      font-size: 1rem;
-      color: #343a40;
-      font-weight: bold;
-    }
-  </style>
+        .comment {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-actions {
+            float: right;
+        }
+
+        .edit-comment-form {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .img-fluid.custom-image {
+            max-width: 600px; /* 원하는 최대 너비 설정 */
+            width: 100%;
+            height: auto;
+        }
+
+        .like-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-top: 10px;
+            gap: 8px;
+        }
+
+        /* 좋아요 버튼 컨테이너 */
+        .like-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 버튼 자체 */
+        .like-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0;
+            font-size: 14px;
+            color: #495057;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        /* 버튼 호버 시 */
+        .like-btn:hover {
+            color: #212529;
+            transform: translateY(-2px);
+        }
+
+        .like-btn {
+            font-size: 2rem;
+        }
+
+        /* 버튼 클릭 시 */
+        .like-btn:active {
+            transform: translateY(0);
+        }
+
+        .like-count {
+            font-size: 1rem;
+            color: #495057;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="post-container">
-        <!-- 플래시 메시지 영역 -->
-        <h2 class="post-title" th:text="${post.title}">게시글 제목</h2>
-        <p class="post-meta">
-          작성자: <span class="post-author" th:text="${post.nickname}">작성자</span> ·
-          작성일: <span class="post-date" th:text="${post.createDateTime}">작성일</span> ·
-          조회수: <span class="post-views" th:text="${post.viewCount}">조회수</span>
-        </p>
-        <hr>
-        <div th:text="${post.content}" class="mb-3">게시글 내용</div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="post-container">
+                <!-- 플래시 메시지 영역 -->
 
-        <div th:if="${!#lists.isEmpty(post.images)}">
-          <div class="row justify-content-center">
-            <div class="col-md-6 col-sm-8 mb-3" th:each="image : ${post.images}">
-              <img th:src="@{${image.imgUrl}}" alt="이미지" class="img-fluid rounded shadow-sm custom-image">
+                <h2 class="post-title" th:text="${post.title}">게시글 제목</h2>
+                <p class="post-meta">
+                    작성자: <span class="post-author" th:text="${post.nickname}">작성자</span> ·
+                    작성일: <span class="post-date" th:text="${post.createDateTime}">작성일</span> ·
+                    조회수: <span class="post-views" th:text="${post.viewCount}">조회수</span>
+                </p>
+                <hr>
+                <div th:text="${post.content}" class="mb-3">게시글 내용</div>
+
+                <div th:if="${!#lists.isEmpty(post.images)}">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-sm-8 mb-3" th:each="image : ${post.images}">
+                            <img th:src="@{${image.imgUrl}}" alt="이미지" class="img-fluid rounded shadow-sm custom-image">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <!-- 좋아요 버튼 -->
+                    <div class="like-section">
+                        <form id="like-form" th:data-post-id="${post.id}">
+                            <button type="button" id="like-button" class="like-btn">
+                                <span class="like-heart">👍</span>
+                            </button>
+                        </form>
+                        <p class="like-count">
+                            <span id="like-count" th:text="${post.likeCount}">0</span>
+                        </p>
+                    </div>
+
+                    <!-- 수정 버튼: 작성자만 표시 -->
+                    <a th:if="${#authentication.isAuthenticated() and #authentication.name == post.username}"
+                       th:href="@{'/post/edit/' + ${post.id}}"
+                       class="btn btn-primary me-2">수정</a>
+
+                    <!-- 삭제 버튼: 작성자만 표시 -->
+                    <form th:if="${#authentication.isAuthenticated() and #authentication.name == post.username}"
+                          th:action="@{'/post/delete/' + ${post.id}}"
+                          method="post"
+                          style="display: inline;">
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
+                            삭제
+                        </button>
+                    </form>
+                    <a th:href="@{/}" class="btn btn-secondary">홈으로 돌아가기</a>
+                </div>
             </div>
-          </div>
         </div>
-        <hr>
-        <div>
-          <!-- 좋아요 버튼 -->
-          <div class="like-section">
-            <form id="like-form" th:data-post-id="${post.id}">
-              <button type="button" id="like-button" class="like-btn">
-                <span class="like-heart">♡</span>
-              </button>
-            </form>
-            <p class="like-count"><span id="like-count" th:text="${post.likeCount}">0</span> 좋아요</p>
-          </div>
-          <!-- 수정 버튼: 작성자만 표시 -->
-          <a th:if="${#authentication.isAuthenticated() and #authentication.name == post.username}"
-             th:href="@{'/post/edit/' + ${post.id}}"
-             class="btn btn-primary me-2">수정</a>
-
-          <!-- 삭제 버튼: 작성자만 표시 -->
-          <form th:if="${#authentication.isAuthenticated() and #authentication.name == post.username}"
-                th:action="@{'/post/delete/' + ${post.id}}"
-                method="post"
-                style="display: inline;">
-            <button type="submit" class="btn btn-danger"
-                    onclick="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
-              삭제
-            </button>
-          </form>
-          <a th:href="@{/}" class="btn btn-secondary">홈으로 돌아가기</a>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
-
 <!-- 댓글 섹션 -->
 <div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="comment-section">
-        <h4>댓글</h4>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="comment-section">
+                <h4>댓글</h4>
 
-        <!-- 상위 댓글 목록 -->
-        <div th:each="comment : ${comments}" class="comment mb-4">
+                <!-- 상위 댓글 목록 -->
+                <div th:each="comment : ${comments}" class="comment mb-4">
 
-          <!-- 상위 댓글 본문 -->
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <p>
-                <strong th:text="${comment.nickname}">작성자</strong>
-                <span class="text-muted" th:text="${comment.createTime}">작성일</span>
-              </p>
+                    <!-- 상위 댓글 본문 -->
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p>
+                                <strong th:text="${comment.nickname}">작성자</strong>
+                                <span class="text-muted" th:text="${comment.createTime}">작성일</span>
+                            </p>
 
-              <!-- 삭제 상태에 따라 표시 구분 -->
-              <div th:if="${comment.deleted}">
-                <!-- 삭제된 경우 -->
-                <p class="text-muted">삭제된 댓글입니다</p>
-              </div>
-              <div th:if="${!comment.deleted}">
-                <!-- 아직 살아있는 댓글 -->
-                <p th:text="${comment.content}">댓글 내용</p>
-              </div>
-            </div>
+                            <!-- 삭제 상태에 따라 표시 구분 -->
+                            <div th:if="${comment.deleted}">
+                                <!-- 삭제된 경우 -->
+                                <p class="text-muted">삭제된 댓글입니다</p>
+                            </div>
+                            <div th:if="${!comment.deleted}">
+                                <!-- 아직 살아있는 댓글 -->
+                                <p th:text="${comment.content}">댓글 내용</p>
+                            </div>
+                        </div>
 
-            <div class="comment-actions">
-              <!-- 수정 버튼: 작성자만, 그리고 deleted=false 일 때만 노출 (수정 불가) -->
-              <button th:if="${(!comment.deleted) and (#authentication.isAuthenticated() and #authentication.name == comment.username)}"
-                      type="button"
-                      class="btn btn-sm btn-warning me-2"
-                      th:onclick="|toggleEditForm('editForm${comment.id}')|">
-                수정
-              </button>
+                        <div class="comment-actions">
+                            <!-- 수정 버튼: 작성자만, 그리고 deleted=false 일 때만 노출 (수정 불가) -->
+                            <button th:if="${(!comment.deleted) and (#authentication.isAuthenticated() and #authentication.name == comment.username)}"
+                                    type="button"
+                                    class="btn btn-sm btn-warning me-2"
+                                    th:onclick="|toggleEditForm('editForm${comment.id}')|">
+                                수정
+                            </button>
 
-              <!-- 삭제 버튼: 작성자만, deleted=false 일 때만 -->
-              <form th:if="${(!comment.deleted) and (#authentication.isAuthenticated() and #authentication.name == comment.username)}"
-                    th:action="@{'/post/' + ${post.id} + '/comment/delete/' + ${comment.id}}"
-                    method="post"
-                    style="display: inline;">
-                <button type="submit" class="btn btn-sm btn-danger"
-                        onclick="return confirm('정말로 이 댓글을 삭제하시겠습니까?');">
-                  삭제
-                </button>
-              </form>
+                            <!-- 삭제 버튼: 작성자만, deleted=false 일 때만 -->
+                            <form th:if="${(!comment.deleted) and (#authentication.isAuthenticated() and #authentication.name == comment.username)}"
+                                  th:action="@{'/post/' + ${post.id} + '/comment/delete/' + ${comment.id}}"
+                                  method="post"
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('정말로 이 댓글을 삭제하시겠습니까?');">
+                                    삭제
+                                </button>
+                            </form>
 
-              <!-- 대댓글 달기 버튼: 로그인 사용자에게만, deleted=false 일 때만 -->
-              <button th:if="${(!comment.deleted) and (#authentication.isAuthenticated())}"
-                      type="button"
-                      class="btn btn-sm btn-primary ms-2"
-                      th:onclick="|toggleReplyForm('replyForm${comment.id}')|">
-                답글
-              </button>
-            </div>
-          </div>
+                            <!-- 대댓글 달기 버튼: 로그인 사용자에게만, deleted=false 일 때만 -->
+                            <button th:if="${(!comment.deleted) and (#authentication.isAuthenticated())}"
+                                    type="button"
+                                    class="btn btn-sm btn-primary ms-2"
+                                    th:onclick="|toggleReplyForm('replyForm${comment.id}')|">
+                                답글
+                            </button>
+                        </div>
+                    </div>
 
-          <!-- 수정 폼 (deleted=false인 경우만 의미 있음) -->
-          <div th:id="|editForm${comment.id}|" class="edit-comment-form" style="display:none;"
-               th:if="${!comment.deleted}">
-            <form th:action="@{'/post/' + ${post.id} + '/comment/edit/' + ${comment.id}}" method="post">
-              <div class="mb-3">
-                <textarea name="content" class="form-control" rows="3" required th:text="${comment.content}"></textarea>
-              </div>
-              <button type="submit" class="btn btn-success btn-sm me-2">저장</button>
-              <button type="button" class="btn btn-secondary btn-sm"
-                      th:onclick="|toggleEditForm('editForm${comment.id}')|">취소</button>
-            </form>
-          </div>
+                    <!-- 수정 폼 -->
+                    <div th:id="|editForm${comment.id}|" class="edit-comment-form" style="display:none;"
+                         th:if="${!comment.deleted}">
+                        <form th:action="@{'/post/' + ${post.id} + '/comment/edit/' + ${comment.id}}" method="post">
+                            <div class="mb-3">
+                <textarea name="content" class="form-control" rows="3" required
+                          th:text="${comment.content}"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-sm me-2">저장</button>
+                            <button type="button" class="btn btn-secondary btn-sm"
+                                    th:onclick="|toggleEditForm('editForm${comment.id}')|">취소
+                            </button>
+                        </form>
+                    </div>
 
-          <!-- 대댓글 작성 폼 (deleted=false일 때만 표시) -->
-          <div th:id="|replyForm${comment.id}|" class="mt-2" style="display:none;"
-               th:if="${!comment.deleted}">
-            <form th:action="@{'/post/' + ${post.id} + '/comment/create'}" method="post">
-              <!-- parentId를 전송하되, 최상위 폼에서는 전송 안 함 -->
-              <input type="hidden" name="parentId" th:value="${comment.id}"/>
-              <input type="hidden" name="postId" th:value="${post.id}"/>
-              <div class="mb-2">
-                <textarea name="content" class="form-control" rows="2" placeholder="대댓글을 입력하세요" required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary btn-sm">등록</button>
-            </form>
-          </div>
+                    <!-- 대댓글 작성 폼 -->
+                    <div th:id="|replyForm${comment.id}|" class="mt-2" style="display:none;"
+                         th:if="${!comment.deleted}">
+                        <form th:action="@{'/post/' + ${post.id} + '/comment/create'}" method="post">
+                            <input type="hidden" name="parentId" th:value="${comment.id}"/>
+                            <input type="hidden" name="postId" th:value="${post.id}"/>
+                            <div class="mb-2">
+                <textarea name="content" class="form-control" rows="2" placeholder="대댓글을 입력하세요"
+                          required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">등록</button>
+                        </form>
+                    </div>
 
-          <!-- 자식 댓글(대댓글) 목록: 삭제된 부모라도 자식은 그대로 표시 -->
-          <div th:if="${comment.children != null and !comment.children.isEmpty()}"
-               class="child-comments mt-3 ps-3 border-start border-2">
-            <div th:each="child : ${comment.children}" class="child-comment mb-3" style="margin-left:10px;">
-              <!-- 아래는 기존 로직 그대로 -->
-              <div class="d-flex justify-content-between align-items-start">
-                <div>
-                  <p>
-                    <strong th:text="${child.nickname}">대댓글 작성자</strong>
-                    <span class="text-muted" th:text="${child.createTime}">작성일</span>
-                  </p>
-                  <!-- child.deleted 여부에 따라 표시 구분 -->
-                  <div th:if="${child.deleted}">
-                    <p class="text-muted">삭제된 댓글입니다</p>
-                  </div>
-                  <div th:if="${!child.deleted}">
-                    <p th:text="${child.content}">대댓글 내용</p>
-                  </div>
+                    <!-- 자식 댓글(대댓글) 목록: 삭제된 부모라도 자식은 그대로 표시 -->
+                    <div th:if="${comment.children != null and !comment.children.isEmpty()}"
+                         class="child-comments mt-3 ps-3 border-start border-2">
+                        <div th:each="child : ${comment.children}" class="child-comment mb-3" style="margin-left:10px;">
+                            <!-- 아래는 기존 로직 그대로 -->
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <p>
+                                        <strong th:text="${child.nickname}">대댓글 작성자</strong>
+                                        <span class="text-muted" th:text="${child.createTime}">작성일</span>
+                                    </p>
+                                    <!-- child.deleted 여부에 따라 표시 구분 -->
+                                    <div th:if="${child.deleted}">
+                                        <p class="text-muted">삭제된 댓글입니다</p>
+                                    </div>
+                                    <div th:if="${!child.deleted}">
+                                        <p th:text="${child.content}">대댓글 내용</p>
+                                    </div>
+                                </div>
+
+                                <div class="comment-actions">
+                                    <!-- 수정, 삭제 버튼도 child.deleted == false일 때만 표시 -->
+                                    <button th:if="${(!child.deleted) and (#authentication.isAuthenticated() and #authentication.name == child.username)}"
+                                            type="button"
+                                            class="btn btn-sm btn-warning me-2"
+                                            th:onclick="|toggleEditForm('editForm${child.id}')|">
+                                        수정
+                                    </button>
+
+                                    <form th:if="${(!child.deleted) and (#authentication.isAuthenticated() and #authentication.name == child.username)}"
+                                          th:action="@{'/post/' + ${post.id} + '/comment/delete/' + ${child.id}}"
+                                          method="post"
+                                          style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('정말로 이 댓글을 삭제하시겠습니까?');">
+                                            삭제
+                                        </button>
+                                    </form>
+
+                                    <!-- 대댓글에도 답글 버튼 추가 -->
+                                    <button th:if="${(!child.deleted) and (#authentication.isAuthenticated())}"
+                                            type="button"
+                                            class="btn btn-sm btn-primary ms-2"
+                                            th:onclick="|toggleReplyForm('replyForm${child.id}')|">
+                                        답글
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 자식 댓글 수정 폼 -->
+                            <div th:id="|editForm${child.id}|" class="edit-comment-form" style="display:none;"
+                                 th:if="${!child.deleted}">
+                                <form th:action="@{'/post/' + ${post.id} + '/comment/edit/' + ${child.id}}"
+                                      method="post">
+                                    <div class="mb-3">
+                    <textarea name="content" class="form-control" rows="2" required
+                              th:text="${child.content}"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-sm me-2">저장</button>
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                            th:onclick="|toggleEditForm('editForm${child.id}')|">취소
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- 자식 댓글에 대한 답글 작성 폼 추가 -->
+                            <div th:id="|replyForm${child.id}|" class="mt-2 ms-3" style="display:none;"
+                                 th:if="${!child.deleted}">
+                                <form th:action="@{'/post/' + ${post.id} + '/comment/create'}" method="post">
+                                    <input type="hidden" name="parentId" th:value="${child.id}"/>
+                                    <input type="hidden" name="postId" th:value="${post.id}"/>
+                                    <div class="mb-2">
+                    <textarea name="content" class="form-control" rows="2" placeholder="답글을 입력하세요"
+                              required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">등록</button>
+                                </form>
+                            </div>
+
+                            <!-- 손자 댓글 목록 (대댓글의 대댓글) -->
+                            <div th:if="${child.children != null and !child.children.isEmpty()}"
+                                 class="child-comments mt-3 ps-3 border-start border-2">
+                                <div th:each="grandChild : ${child.children}" class="child-comment mb-3"
+                                     style="margin-left:10px;">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p>
+                                                <strong th:text="${grandChild.nickname}">손자댓글 작성자</strong>
+                                                <span class="text-muted" th:text="${grandChild.createTime}">작성일</span>
+                                            </p>
+                                            <!-- 손자 댓글 삭제 여부에 따른 표시 -->
+                                            <div th:if="${grandChild.deleted}">
+                                                <p class="text-muted">삭제된 댓글입니다</p>
+                                            </div>
+                                            <div th:if="${!grandChild.deleted}">
+                                                <p th:text="${grandChild.content}">손자댓글 내용</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="comment-actions">
+                                            <!-- 수정, 삭제 버튼 -->
+                                            <button th:if="${(!grandChild.deleted) and (#authentication.isAuthenticated() and #authentication.name == grandChild.username)}"
+                                                    type="button" class="btn btn-sm btn-warning me-2"
+                                                    th:onclick="|toggleEditForm('editForm${grandChild.id}')|">
+                                                수정
+                                            </button>
+
+                                            <form th:if="${(!grandChild.deleted) and (#authentication.isAuthenticated() and #authentication.name == grandChild.username)}"
+                                                  th:action="@{'/post/' + ${post.id} + '/comment/delete/' + ${grandChild.id}}"
+                                                  method="post" style="display: inline;">
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('정말로 이 댓글을 삭제하시겠습니까?');">
+                                                    삭제
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- 손자 댓글 수정 폼 -->
+                                    <div th:id="|editForm${grandChild.id}|" class="edit-comment-form"
+                                         style="display:none;"
+                                         th:if="${!grandChild.deleted}">
+                                        <form th:action="@{'/post/' + ${post.id} + '/comment/edit/' + ${grandChild.id}}"
+                                              method="post">
+                                            <div class="mb-3">
+                        <textarea name="content" class="form-control" rows="2" required
+                                  th:text="${grandChild.content}"></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-success btn-sm me-2">저장</button>
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                    th:onclick="|toggleEditForm('editForm${grandChild.id}')|">취소
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="comment-actions">
-                  <!-- 수정, 삭제 버튼도 child.deleted == false일 때만 표시 -->
-                  <button th:if="${(!child.deleted) and (#authentication.isAuthenticated() and #authentication.name == child.username)}"
-                          type="button"
-                          class="btn btn-sm btn-warning me-2"
-                          th:onclick="|toggleEditForm('editForm${child.id}')|">
-                    수정
-                  </button>
-
-                  <form th:if="${(!child.deleted) and (#authentication.isAuthenticated() and #authentication.name == child.username)}"
-                        th:action="@{'/post/' + ${post.id} + '/comment/delete/' + ${child.id}}"
-                        method="post"
-                        style="display: inline;">
-                    <button type="submit" class="btn btn-sm btn-danger"
-                            onclick="return confirm('정말로 이 댓글을 삭제하시겠습니까?');">
-                      삭제
-                    </button>
-                  </form>
-                </div>
-              </div>
-
-              <!-- 자식 댓글 수정 폼 -->
-              <div th:id="|editForm${child.id}|" class="edit-comment-form" style="display:none;"
-                   th:if="${!child.deleted}">
-                <form th:action="@{'/post/' + ${post.id} + '/comment/edit/' + ${child.id}}" method="post">
-                  <div class="mb-3">
-                    <textarea name="content" class="form-control" rows="2" required th:text="${child.content}"></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-success btn-sm me-2">저장</button>
-                  <button type="button" class="btn btn-secondary btn-sm"
-                          th:onclick="|toggleEditForm('editForm${child.id}')|">취소</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 댓글 작성 폼 (최상위 댓글) -->
-        <div th:if="${#authentication.isAuthenticated()}" class="mt-4">
-          <h5>댓글 작성</h5>
-          <form th:action="@{'/post/' + ${post.id} + '/comment/create'}" th:object="${commentForm}" method="post">
-            <!-- 최상위 댓글이므로 parentId는 넘기지 않음 -->
-            <div class="mb-3">
+                <!-- 최상위 댓글 작성 폼 (반복문 밖으로 이동) -->
+                <div th:if="${#authentication.isAuthenticated()}" class="mt-4">
+                    <h5>댓글 작성</h5>
+                    <form th:action="@{'/post/' + ${post.id} + '/comment/create'}" th:object="${commentForm}"
+                          method="post">
+                        <!-- 최상위 댓글이므로 parentId는 넘기지 않음 -->
+                        <div class="mb-3">
               <textarea id="content" th:field="*{content}" class="form-control" rows="3"
                         placeholder="댓글을 입력하세요" required></textarea>
-              <div th:if="${#fields.hasErrors('content')}" class="text-danger" th:errors="*{content}"></div>
+                            <div th:if="${#fields.hasErrors('content')}" class="text-danger"
+                                 th:errors="*{content}"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">작성</button>
+                    </form>
+                </div>
+
+                <div th:if="${!#authentication.isAuthenticated()}" class="mt-4">
+                    <p>댓글 작성을 원하시면 <a th:href="@{/login}">로그인</a>하세요.</p>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">작성</button>
-          </form>
         </div>
-
-        <div th:if="${!#authentication.isAuthenticated()}" class="mt-4">
-          <p>댓글 작성을 원하시면 <a th:href="@{/login}">로그인</a>하세요.</p>
-        </div>
-
-      </div>
     </div>
-  </div>
 </div>
 <!-- 로그인 모달 -->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="loginModalLabel">로그인 필요</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-        <a th:href="@{/login}" class="btn btn-primary">로그인</a>
-      </div>
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">로그인 필요</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <a th:href="@{/login}" class="btn btn-primary">로그인</a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <!-- Bootstrap JS 및 의존성 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  function showLoginModal() {
-    $('#loginModal').modal('show');
-  }
-
-  function toggleEditForm(formId) {
-    var form = document.getElementById(formId);
-    if (form.style.display === "none" || form.style.display === "") {
-      form.style.display = "block";
-    } else {
-      form.style.display = "none";
+    function showLoginModal() {
+        $('#loginModal').modal('show');
     }
-  }
-  document.getElementById("like-button").addEventListener("click", function () {
-    const postId = document.getElementById("like-form").getAttribute("data-post-id");
 
-    fetch(`/api/likes/${postId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    function toggleEditForm(formId) {
+        var form = document.getElementById(formId);
+        if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+
+    document.getElementById("like-button").addEventListener("click", function () {
+        const postId = document.getElementById("like-form").getAttribute("data-post-id");
+
+        fetch(`/api/likes/${postId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
             .then(response => {
-              if (response.ok) {
-                return response.json(); // 서버에서 새로운 좋아요 개수를 반환
-              } else {
-                throw new Error("처리에 실패했습니다.");
-              }
+                if (response.ok) {
+                    return response.json(); // 서버에서 새로운 좋아요 개수를 반환
+                } else {
+                    throw new Error("처리에 실패했습니다.");
+                }
             })
             .then(data => {
-              // 좋아요 개수 업데이트
-              document.querySelector("#like-count").textContent = data.likeCount;
+                // 좋아요 개수 업데이트
+                document.querySelector("#like-count").textContent = data.likeCount;
             })
             .catch(error => {
-              console.error("Error:", error);
+                console.error("Error:", error);
             });
-  });
+    });
 
-  function toggleEditForm(elementId) {
-    const form = document.getElementById(elementId);
-    if (form.style.display === 'none') {
-      form.style.display = 'block';
-    } else {
-      form.style.display = 'none';
-    }
-  }
 
-  function toggleReplyForm(elementId) {
-    const form = document.getElementById(elementId);
-    if (form.style.display === 'none') {
-      form.style.display = 'block';
-    } else {
-      form.style.display = 'none';
+    function toggleEditForm(elementId) {
+        const form = document.getElementById(elementId);
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
     }
-  }
+
+    function toggleReplyForm(elementId) {
+        const form = document.getElementById(elementId);
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
 </script>
 </body>
 </html>

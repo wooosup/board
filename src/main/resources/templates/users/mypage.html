@@ -73,6 +73,17 @@
     <li th:if="${comments.size() == 0}" class="list-group-item empty-item">작성한 댓글이 없습니다.</li>
   </ul>
 
+  <h2 class="mb-3">좋아요 누른 글</h2>
+  <ul class="list-group mb-4">
+    <li th:each="likedPost : ${likedPosts}" class="list-group-item">
+      <div>
+        <a th:href="@{'/post/' + ${likedPost.id}}" th:text="${likedPost.title}" class="post-link">게시글 제목</a>
+      </div>
+      <span class="text-muted" th:text="${#temporals.format(likedPost.likedAt, 'yyyy-MM-dd HH:mm')}">좋아요 누른 시간</span>
+    </li>
+    <li th:if="${likedPosts.size() == 0}" class="list-group-item empty-item">좋아요 누른 글이 없습니다.</li>
+  </ul>
+
   <h2 class="mb-3">받은 쪽지</h2>
   <ul class="list-group mb-4">
     <li th:each="message : ${receivedMessages}" class="list-group-item">
@@ -89,6 +100,7 @@
     </li>
     <li th:if="${receivedMessages.size() == 0}" class="list-group-item empty-item">받은 쪽지가 없습니다.</li>
   </ul>
+
   <h2 class="mb-3">보낸 쪽지</h2>
   <ul class="list-group mb-4">
     <li th:each="message : ${sentMessages}" class="list-group-item">

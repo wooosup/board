@@ -10,7 +10,6 @@
             background-color: #f5f5f5;
         }
         h1 {
-            color: #343a40;
             font-weight: bold;
         }
         .table {
@@ -24,18 +23,23 @@
         }
         .table th {
             background-color: #4CAF50;
-            color: #ffffff;
             font-weight: bold;
         }
-        .btn-primary, .btn-danger, .btn-success {
+        .btn {
             border-radius: 20px;
+            font-size: 14px;
+            padding: 6px 12px;
+            margin: 0 2px;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: none;
+            color: black;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
         }
-        .btn-success {
-            background-color: #28a745;
-            color: #fff;
-        }
-        .btn-primary {
-            background-color: #007bff;
+        .btn:hover {
+            background-color: #dee2e6;
+            transform: translateY(-1px);
         }
         .container {
             background-color: #fff;
@@ -51,7 +55,7 @@
             border: none;
         }
         .modal-title {
-            color: #007bff;
+
         }
         .post-card {
             background-color: #ffffff;
@@ -63,15 +67,12 @@
         .post-title a {
             font-size: 18px;
             font-weight: bold;
-            color: #007bff;
             text-decoration: none;
         }
         .post-title a:hover {
-            color: #0056b3;
         }
         .post-meta {
             font-size: 14px;
-            color: #6c757d;
         }
         .search-form {
             margin-bottom: 20px;
@@ -87,25 +88,26 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
-            <a th:href="@{/}">게시판</a>
+            <a th:href="@{/}">Home</a>
         </h1>
         <div>
             <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/logout}" method="post" style="display: inline;" onsubmit="return confirmLogout();">
-                <button type="submit" class="btn btn-danger">로그아웃</button>
-                <a th:href="@{/mypage}" class="btn btn-primary">마이페이지</a>
+                <button type="submit" class="btn">로그아웃</button>
+                <a th:href="@{/mypage}" class="btn">마이페이지</a>
             </form>
-            <a th:if="${!#authorization.expression('isAuthenticated()')}" th:href="@{/login}" class="btn btn-primary">로그인</a>
+            <a th:if="${!#authorization.expression('isAuthenticated()')}" th:href="@{/login}" class="btn">로그인</a>
         </div>
     </div>
 
     <div class="mb-3 text-right">
-        <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/post/create}" class="btn btn-success">게시글 작성</a>
+        <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/post/create}" class="btn">게시글 작성</a>
         <button th:if="${!#authorization.expression('isAuthenticated()')}"
-                class="btn btn-success"
+                class="btn"
                 onclick="showLoginModal();">게시글 작성</button>
     </div>
 
     <div class="post-list">
+        <div></div>
         <div th:each="post : ${posts.content}" class="post-card">
             <div class="post-title">
                 <a th:href="@{'/post/' + ${post.id}}" th:text="${post.title}">게시글 제목</a>

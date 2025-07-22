@@ -11,7 +11,6 @@ import hello.board.domain.repository.PostStatisticsRepository;
 import hello.board.service.EntityFinder;
 import hello.board.service.comment.CommentService;
 import hello.board.service.comment.dto.CommentDto;
-import hello.board.service.image.ImageService;
 import hello.board.service.image.PostImageManager;
 import hello.board.service.image.dto.ImageDto;
 import hello.board.service.post.dto.*;
@@ -32,7 +31,6 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final ImageService imageService;
     private final EntityFinder entityFinder;
     private final PostQueryRepository postQueryRepository;
     private final PostStatisticsRepository postStatisticsRepository;

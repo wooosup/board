@@ -59,10 +59,6 @@
             <p class="text-secondary mt-2 mb-4">서비스 사용을 위한 회원 가입</p>
 
             <form th:action="@{/signup}" th:object="${form}" method="POST">
-                <!-- 글로벌 오류 메시지 -->
-                <div th:if="${#fields.globalErrors()}" class="alert alert-danger">
-                    <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
-                </div>
 
                 <!-- 아이디 -->
                 <div class="input-group mb-3">

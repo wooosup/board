@@ -40,7 +40,9 @@ public class S3Service implements FileStore{
                             .contentType(file.getContentType())
                             .build(),
                     RequestBody.fromInputStream(inputStream, file.getSize()));
-        } catch (S3Exception e) {
+        } catch (Throwable e) {
+            System.err.println("실패 원인: " + e.getClass().getName());
+
             throw new FileStorageException("S3에 파일 업로드가 실패했습니다.", e);
         }
         return fileName;
