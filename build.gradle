@@ -61,6 +61,9 @@ dependencies {
     implementation 'org.springframework.retry:spring-retry'
     // aop
     implementation 'org.springframework:spring-aspects'
+
+    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
+    testImplementation "org.testcontainers:redis:1.19.0"
 }
 
 test {
