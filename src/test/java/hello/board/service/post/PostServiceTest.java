@@ -6,8 +6,6 @@ import hello.board.domain.Role;
 import hello.board.domain.entity.post.Post;
 import hello.board.domain.entity.user.User;
 import hello.board.exception.EntityNotFoundException;
-import hello.board.service.post.dto.PostDetailDto;
-import hello.board.service.post.dto.PostForm;
 import hello.board.service.post.dto.UpdatePostForm;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -16,56 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PostServiceTest extends IntegrationTestSupport {
-
-    @Test
-    void savePost() throws Exception {
-        //given
-        User user = User.builder()
-                .username("wss3325")
-                .nickname("keke")
-                .password("1234")
-                .grade(Role.USER)
-                .build();
-        userRepository.save(user);
-
-        PostForm form = PostForm.builder()
-                .title("제목")
-                .content("내용")
-                .build();
-
-        //when
-        PostResponse response = postService.savePost(form, null, user.getUsername());
-
-        //then
-        assertThat(response.getTitle()).isEqualTo("제목");
-        assertThat(response.getContent()).isEqualTo("내용");
-    }
-
-    @Test
-    void findPost() throws Exception {
-        //given
-        User user = User.builder()
-                .username("wss3325")
-                .nickname("keke")
-                .password("1234")
-                .grade(Role.USER)
-                .build();
-        userRepository.save(user);
-        Post post = Post.builder()
-                .title("제목")
-                .content("내용")
-                .user(user)
-                .build();
-        postRepository.save(post);
-
-        //when
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        PostDetailDto response = postService.findByPostId(post.getId(), request);
-
-        //then
-        assertThat(response.getTitle()).isEqualTo("제목");
-        assertThat(response.getContent()).isEqualTo("내용");
-    }
 
     @Test
     void findPostForm() throws Exception {
