@@ -62,8 +62,8 @@ dependencies {
     // aop
     implementation 'org.springframework:spring-aspects'
 
-    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
-    testImplementation "org.testcontainers:redis:1.19.0"
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.6'
+    testImplementation 'com.redis.testcontainers:testcontainers-redis:1.6.4'
 }
 
 test {
