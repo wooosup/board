@@ -1,8 +1,8 @@
 package hello.board.service.image;
 
 
-import hello.board.domain.entity.post.image.Image;
-import hello.board.domain.repository.ImageRepository;
+import hello.board.domain.image.Image;
+import hello.board.domain.image.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

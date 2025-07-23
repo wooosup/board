@@ -1,12 +1,12 @@
 package hello.board.service.post;
 
 import hello.board.IntegrationTestSupport;
-import hello.board.controller.post.response.PostResponse;
+import hello.board.infrastructure.web.post.response.PostResponse;
 import hello.board.domain.Role;
-import hello.board.domain.entity.post.Post;
-import hello.board.domain.entity.user.User;
-import hello.board.exception.EntityNotFoundException;
-import hello.board.service.post.dto.UpdatePostForm;
+import hello.board.domain.post.Post;
+import hello.board.domain.user.User;
+import hello.board.global.exception.EntityNotFoundException;
+import hello.board.infrastructure.web.post.request.UpdatePostForm;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 

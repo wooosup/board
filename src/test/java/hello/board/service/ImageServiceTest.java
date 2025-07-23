@@ -1,7 +1,7 @@
 package hello.board.service;
 
-import hello.board.domain.entity.post.image.Image;
-import hello.board.domain.repository.ImageRepository;
+import hello.board.domain.image.Image;
+import hello.board.domain.image.ImageRepository;
 import hello.board.service.image.FileService;
 import hello.board.service.image.ImageService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class ImageServiceTest {

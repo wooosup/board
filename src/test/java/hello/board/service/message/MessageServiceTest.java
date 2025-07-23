@@ -2,7 +2,7 @@ package hello.board.service.message;
 
 import hello.board.IntegrationTestSupport;
 import hello.board.domain.Role;
-import hello.board.domain.entity.user.User;
+import hello.board.domain.user.User;
 import hello.board.service.message.dto.MessageDto;
 import hello.board.service.message.dto.MessageForm;
 import org.junit.jupiter.api.Test;

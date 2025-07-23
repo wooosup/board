@@ -2,8 +2,8 @@ package hello.board.controller.user;
 
 import hello.board.ControllerTestSupport;
 import hello.board.domain.Role;
-import hello.board.domain.entity.message.Message;
-import hello.board.domain.entity.user.User;
+import hello.board.domain.message.Message;
+import hello.board.domain.user.User;
 import hello.board.service.user.dto.UserForm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

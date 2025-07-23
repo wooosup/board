@@ -1,13 +1,13 @@
 package hello.board.service.comment;
 
 import hello.board.IntegrationTestSupport;
-import hello.board.controller.comment.response.CommentResponse;
+import hello.board.infrastructure.web.comment.response.CommentResponse;
 import hello.board.domain.Role;
-import hello.board.domain.entity.comment.Comment;
-import hello.board.domain.entity.post.Post;
-import hello.board.domain.entity.user.User;
-import hello.board.service.comment.dto.CommentDto;
-import hello.board.service.comment.dto.CommentForm;
+import hello.board.domain.comment.Comment;
+import hello.board.domain.post.Post;
+import hello.board.domain.user.User;
+import hello.board.infrastructure.web.comment.response.CommentDto;
+import hello.board.infrastructure.web.comment.request.CommentForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

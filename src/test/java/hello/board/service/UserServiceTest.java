@@ -1,9 +1,9 @@
 package hello.board.service;
 
 import hello.board.IntegrationTestSupport;
-import hello.board.domain.entity.comment.Comment;
-import hello.board.domain.entity.post.Post;
-import hello.board.domain.entity.user.User;
+import hello.board.domain.comment.Comment;
+import hello.board.domain.post.Post;
+import hello.board.domain.user.User;
 import hello.board.service.user.dto.UserForm;
 import hello.board.service.user.dto.UserLikedPostsDto;
 import hello.board.service.user.dto.UserPostsAndCommentsDto;

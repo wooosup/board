@@ -1,14 +1,14 @@
 package hello.board;
 
-import hello.board.domain.repository.CommentRepository;
-import hello.board.domain.repository.PostQueryRepository;
-import hello.board.domain.repository.PostRepository;
-import hello.board.domain.repository.UserRepository;
+import hello.board.infrastructure.persistence.repository.PostQueryRepository;
+import hello.board.domain.comment.CommentRepository;
+import hello.board.domain.post.PostRepository;
+import hello.board.domain.user.UserRepository;
 import hello.board.service.comment.CommentService;
 import hello.board.service.image.FileStore;
 import hello.board.service.message.MessageService;
 import hello.board.service.post.PostService;
-import hello.board.service.post.poststatistics.LikeService;
+import hello.board.service.poststatistics.LikeService;
 import hello.board.service.user.UserService;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;

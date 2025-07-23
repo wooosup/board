@@ -1,6 +1,6 @@
 package hello.board.service.image;
 
-import hello.board.exception.FileStorageException;
+import hello.board.global.exception.FileStorageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
