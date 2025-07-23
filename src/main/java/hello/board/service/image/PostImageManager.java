@@ -1,8 +1,8 @@
 package hello.board.service.image;
 
-import hello.board.domain.entity.post.Post;
-import hello.board.domain.entity.post.image.Image;
-import hello.board.exception.ImageUploadException;
+import hello.board.domain.post.Post;
+import hello.board.domain.image.Image;
+import hello.board.global.exception.ImageUploadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

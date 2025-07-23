@@ -1,8 +1,8 @@
 package hello.board.service.post.poststatistics;
 
 import hello.board.IntegrationTestSupport;
-import hello.board.domain.entity.post.Post;
-import hello.board.domain.entity.user.User;
+import hello.board.domain.post.Post;
+import hello.board.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

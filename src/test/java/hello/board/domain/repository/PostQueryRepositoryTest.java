@@ -2,10 +2,10 @@ package hello.board.domain.repository;
 
 import hello.board.IntegrationTestSupport;
 import hello.board.domain.Role;
-import hello.board.domain.entity.post.Post;
-import hello.board.domain.entity.user.User;
-import hello.board.service.post.dto.MainPostDto;
-import hello.board.service.post.dto.PostSearch;
+import hello.board.domain.post.Post;
+import hello.board.domain.user.User;
+import hello.board.infrastructure.web.post.response.MainPostDto;
+import hello.board.infrastructure.web.post.response.PostSearch;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

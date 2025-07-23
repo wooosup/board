@@ -1,8 +1,8 @@
 package hello.board;
 
-import hello.board.domain.repository.MessageRepository;
-import hello.board.domain.repository.PostRepository;
-import hello.board.domain.repository.UserRepository;
+import hello.board.domain.message.MessageRepository;
+import hello.board.domain.post.PostRepository;
+import hello.board.domain.user.UserRepository;
 import hello.board.service.image.FileStore;
 import hello.board.service.post.PostService;
 import hello.board.service.user.UserService;

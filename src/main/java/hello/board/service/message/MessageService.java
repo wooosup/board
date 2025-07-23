@@ -1,11 +1,11 @@
 package hello.board.service.message;
 
-import hello.board.domain.entity.message.Message;
+import hello.board.domain.message.Message;
+import hello.board.domain.user.User;
+import hello.board.domain.message.MessageRepository;
+import hello.board.service.EntityFinder;
 import hello.board.service.message.dto.MessageDto;
 import hello.board.service.message.dto.MessageForm;
-import hello.board.domain.entity.user.User;
-import hello.board.domain.repository.MessageRepository;
-import hello.board.service.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
