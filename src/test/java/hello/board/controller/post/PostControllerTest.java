@@ -171,11 +171,13 @@ class PostControllerTest extends ControllerTestSupport {
                         .param("content", updatePostForm.getContent())
                 )
                 .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/post/" + savedPost.getId()))
                 .andDo(print());
 
         //then
-        assertThat(savedPost.getTitle()).isEqualTo("라멘");
-        assertThat(savedPost.getContent()).isEqualTo("츠케멘");
+        Post updatedPost = postRepository.findById(savedPost.getId()).get();
+        assertThat(updatedPost.getTitle()).isEqualTo("라멘");
+        assertThat(updatedPost.getContent()).isEqualTo("츠케멘");
     }
 
     @DisplayName("게시글 수정 권한이 없는 경우 오류가 발생한다.")
@@ -196,7 +198,7 @@ class PostControllerTest extends ControllerTestSupport {
                         .param("title", updatePostForm.getTitle())
                         .param("content", updatePostForm.getContent())
                 )
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isForbidden())
                 .andDo(print());
     }
 

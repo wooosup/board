@@ -1,5 +1,6 @@
 package hello.board.service.comment;
 
+import hello.board.global.annotation.CheckCommentOwner;
 import hello.board.infrastructure.web.comment.response.CommentResponse;
 import hello.board.domain.comment.Comment;
 import hello.board.domain.post.Post;
@@ -48,19 +49,16 @@ public class CommentService {
         return getCommentDto(post);
     }
 
-    public void updateComment(String content, Long commentId, String username) {
+    @CheckCommentOwner
+    public void updateComment(String content, Long commentId) {
         Comment comment = entityFinder.getComment(commentId);
-        User user = entityFinder.getLoginUser(username);
 
-        checkAuthorization(comment, user);
         comment.updateComment(content);
     }
 
-    public void deleteComment(Long commentId, String loginId) {
+    @CheckCommentOwner
+    public void deleteComment(Long commentId) {
         Comment findComment = entityFinder.getComment(commentId);
-        User user = entityFinder.getLoginUser(loginId);
-
-        checkAuthorization(findComment, user);
 
         if (hasChildren(findComment)) {
             findComment.markAsDeleted();
@@ -102,11 +100,5 @@ public class CommentService {
 
     private static boolean hasNotParent(Comment comment) {
         return comment.getParent() == null;
-    }
-
-    private static void checkAuthorization(Comment findComment, User user) {
-        if (!findComment.getUser().equals(user)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
     }
 }
