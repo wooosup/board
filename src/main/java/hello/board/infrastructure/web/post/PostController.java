@@ -63,12 +63,12 @@ public class PostController {
     }
 
     @PostMapping("/post/create")
-    public String createPost(@Validated @ModelAttribute("form") PostForm form, BindingResult result, Principal pri,
+    public String createPost(@Validated @ModelAttribute("form") PostForm form, BindingResult result,
                              @RequestParam(value = "images", required = false) List<MultipartFile> images) {
         if (result.hasErrors()) {
             return "posts/createPostForm";
         }
-        PostResponse response = postService.savePost(form, images, pri.getName());
+        PostResponse response = postService.savePost(form, images);
         return "redirect:/post/" + response.getId();
     }
 
@@ -97,13 +97,13 @@ public class PostController {
                              @RequestParam(value = "images", required = false) List<MultipartFile> images,
                              @RequestParam(value = "imageIdsToDelete", required = false) List<Long> imageIdsToDelete,
                              Principal pri) {
-        postService.updatePost(postId, form, images, pri.getName(), imageIdsToDelete);
+        postService.updatePost(postId, form, images, imageIdsToDelete);
         return "redirect:/post/" + postId;
     }
 
     @PostMapping("/post/delete/{postId}")
-    public String deletePost(@PathVariable Long postId, Principal pri) {
-        postService.deletePost(postId, pri.getName());
+    public String deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
         return "redirect:/";
     }
 }

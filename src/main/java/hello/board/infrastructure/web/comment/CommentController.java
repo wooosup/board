@@ -31,18 +31,18 @@ public class CommentController {
 
     @PostMapping("/edit/{commentId}")
     public String updateComment(@PathVariable Long postId, @PathVariable Long commentId,
-                                @RequestParam("content") String content, Principal pri) {
+                                @RequestParam("content") String content) {
         if (content == null || content.trim().isEmpty()) {
             return "redirect:/post/" + postId;
         }
 
-        commentService.updateComment(content, commentId, pri.getName());
+        commentService.updateComment(content, commentId);
         return "redirect:/post/" + postId;
     }
 
     @PostMapping("/delete/{commentId}")
-    public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId, Principal pri) {
-        commentService.deleteComment(commentId, pri.getName());
+    public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
 
         return "redirect:/post/" + postId;
     }

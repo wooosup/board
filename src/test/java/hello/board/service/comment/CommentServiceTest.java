@@ -10,6 +10,7 @@ import hello.board.infrastructure.web.comment.response.CommentDto;
 import hello.board.infrastructure.web.comment.request.CommentForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +86,7 @@ class CommentServiceTest extends IntegrationTestSupport {
                 .parent(comment1)
                 .content("댓글3")
                 .build();
-        commentRepository.saveAll(List.of(comment1,comment2,comment3));
+        commentRepository.saveAll(List.of(comment1, comment2, comment3));
 
         commentRepository.flush();
         postRepository.flush();
@@ -102,6 +103,7 @@ class CommentServiceTest extends IntegrationTestSupport {
 
     @DisplayName("자식댓글이 있는 부모댓글을 삭제하면 부모댓글은 삭제되지 않고 삭제된 것으로 표시된다.")
     @Test
+    @WithMockUser(username = "wss3325")
     void delete() throws Exception {
         //given
         User user = User.builder()
@@ -135,7 +137,7 @@ class CommentServiceTest extends IntegrationTestSupport {
 
         em.clear();
         //when
-        commentService.deleteComment(comment1.getId(), user.getUsername());
+        commentService.deleteComment(comment1.getId());
 
         //then
         Optional<Comment> result = commentRepository.findById(comment1.getId());
@@ -144,6 +146,7 @@ class CommentServiceTest extends IntegrationTestSupport {
     }
 
     @Test
+    @WithMockUser(username = "wss3325")
     void update() throws Exception {
         //given
         User user = User.builder()
@@ -168,7 +171,7 @@ class CommentServiceTest extends IntegrationTestSupport {
         commentRepository.save(comment);
 
         //when
-        commentService.updateComment("수정된 댓글", comment.getId(), user.getUsername());
+        commentService.updateComment("수정된 댓글", comment.getId());
 
         //then
         assertThat(comment.getContent()).isEqualTo("수정된 댓글");
