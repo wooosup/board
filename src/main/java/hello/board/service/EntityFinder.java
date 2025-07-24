@@ -1,12 +1,12 @@
 package hello.board.service;
 
 import hello.board.domain.comment.Comment;
-import hello.board.domain.message.Message;
-import hello.board.domain.post.Post;
-import hello.board.domain.user.User;
 import hello.board.domain.comment.CommentRepository;
+import hello.board.domain.message.Message;
 import hello.board.domain.message.MessageRepository;
+import hello.board.domain.post.Post;
 import hello.board.domain.post.PostRepository;
+import hello.board.domain.user.User;
 import hello.board.domain.user.UserRepository;
 import hello.board.global.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
