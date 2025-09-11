@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew build
         env:
           DB_URL: ${{ secrets.DB_URL }}
-          DB_USER_NAME: ${{ secrets.DB_USER_NAME }}
+          DB_USER_NAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
