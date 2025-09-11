@@ -1,8 +1,8 @@
 package hello.board.service.image.prod;
 
+import hello.board.global.exception.FileStorageException;
 import hello.board.service.image.FileStore;
 import hello.board.service.image.FileUtils;
-import hello.board.global.exception.FileStorageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -15,7 +15,6 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -30,7 +29,7 @@ public class S3Service implements FileStore {
     private final S3Client s3Client;
 
     @Override
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         String fileName = FileUtils.createFileName(originalFilename);
 
