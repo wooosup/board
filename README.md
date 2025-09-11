@@ -29,7 +29,7 @@ https://www.woosup.site
 ---
 ## 아키텍처
 <div align="center">
-    <img src="src/main/resources/image/아키텍처.png" width="700">
+    <img src="src/main/resources/image/아키텍처 (1).png" width="700">
 </div>
 
 ---
