@@ -11,4 +11,6 @@ import java.util.List;
 public interface PostJpaRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByUserOrderByCreateDateTimeDesc(User user);
+
+    void deleteAllByUser(User user);
 }

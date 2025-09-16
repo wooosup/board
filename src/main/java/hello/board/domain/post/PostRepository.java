@@ -18,4 +18,6 @@ public interface PostRepository {
     List<Post> findByUserOrderByCreateDateTimeDesc(User user);
 
     void flush();
+
+    void deleteAllByUser(User user);
 }

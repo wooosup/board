@@ -34,4 +34,9 @@ public class LikeRepositoryImpl implements LikeRepository {
     public List<Like> findByUserOrderByCreateDateTimeDesc(User user) {
         return likeJpaRepository.findByUserOrderByCreateDateTimeDesc(user);
     }
+
+    @Override
+    public void deleteAllByUser(User user) {
+        likeJpaRepository.deleteAllByUser(user);
+    }
 }

@@ -49,4 +49,9 @@ public class CommentRepositoryImpl implements CommentRepository {
     public void flush() {
         commentJpaRepository.flush();
     }
+
+    @Override
+    public void deleteAllByUser(User user) {
+        commentJpaRepository.deleteAllByUser(user);
+    }
 }

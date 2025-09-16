@@ -15,4 +15,6 @@ public interface LikeJpaRepository extends JpaRepository<Like, Long> {
     Optional<Like> findByPostIdAndUsername(@Param("postId") Long postId, @Param("username") String username);
 
     List<Like> findByUserOrderByCreateDateTimeDesc(User user);
+
+    void deleteAllByUser(User user);
 }

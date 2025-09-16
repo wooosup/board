@@ -38,4 +38,9 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> saveAll(List<User> users) {
         return userJpaRepository.saveAll(users);
     }
+
+    @Override
+    public void delete(User user) {
+        userJpaRepository.delete(user);
+    }
 }

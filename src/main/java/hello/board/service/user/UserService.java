@@ -1,16 +1,16 @@
 package hello.board.service.user;
 
-import hello.board.infrastructure.web.user.response.UserResponse;
-import hello.board.domain.like.Like;
-import hello.board.domain.user.User;
 import hello.board.domain.comment.CommentRepository;
+import hello.board.domain.like.Like;
 import hello.board.domain.like.LikeRepository;
 import hello.board.domain.post.PostRepository;
+import hello.board.domain.user.User;
 import hello.board.domain.user.UserRepository;
-import hello.board.service.EntityFinder;
 import hello.board.infrastructure.web.comment.response.CommentDto;
 import hello.board.infrastructure.web.post.response.LikedPostDto;
 import hello.board.infrastructure.web.post.response.MyPagePostDto;
+import hello.board.infrastructure.web.user.response.UserResponse;
+import hello.board.service.EntityFinder;
 import hello.board.service.user.dto.UserForm;
 import hello.board.service.user.dto.UserLikedPostsDto;
 import hello.board.service.user.dto.UserPostsAndCommentsDto;
@@ -62,10 +62,21 @@ public class UserService {
         return UserLikedPostsDto.of(likePosts);
     }
 
+    @Transactional
+    public void deleteMember(String username) {
+        User user = entityFinder.getLoginUser(username);
+        postRepository.deleteAllByUser(user);
+        commentRepository.deleteAllByUser(user);
+        likeRepository.deleteAllByUser(user);
+
+        userRepository.delete(user);
+    }
+
     // 입력 폼 검증
     public boolean isUsernameDuplicate(String username) {
         return userRepository.existsByUsername(username);
     }
+
     public boolean isNicknameDuplicate(String nickname) {
         return userRepository.existsByNickname(nickname);
     }

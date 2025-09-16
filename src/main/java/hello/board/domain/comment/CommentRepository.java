@@ -20,4 +20,6 @@ public interface CommentRepository {
     List<Comment> saveAll(List<Comment> comments);
 
     void flush();
+
+    void deleteAllByUser(User user);
 }

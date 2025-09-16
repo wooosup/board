@@ -99,6 +99,17 @@ public class UserController {
         return USERS_MYPAGE;
     }
 
+    @PostMapping("/delete")
+    public String deleteMember(Principal principal, HttpServletRequest request) {
+        if (principal != null) {
+            userService.deleteMember(principal.getName());
+            request.getSession().invalidate();
+
+            return "redirect:/";
+        }
+        return "redirect:/login";
+    }
+
     private static void setUpSuccessRedirect(RedirectAttributes redirect) {
         redirect.addFlashAttribute("successMessage", "회원가입이 완료되었습니다!");
     }

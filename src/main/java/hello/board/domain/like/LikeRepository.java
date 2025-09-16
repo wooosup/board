@@ -14,4 +14,6 @@ public interface LikeRepository {
     Optional<Like> findByPostIdAndUsername(Long postId, String username);
 
     List<Like> findByUserOrderByCreateDateTimeDesc(User user);
+
+    void deleteAllByUser(User user);
 }
