@@ -1,25 +1,17 @@
 package hello.board.service.user;
 
-import hello.board.domain.comment.CommentRepository;
-import hello.board.domain.like.Like;
-import hello.board.domain.like.LikeRepository;
-import hello.board.domain.post.PostRepository;
 import hello.board.domain.user.User;
 import hello.board.domain.user.UserRepository;
-import hello.board.infrastructure.web.comment.response.CommentDto;
-import hello.board.infrastructure.web.post.response.LikedPostDto;
-import hello.board.infrastructure.web.post.response.MyPagePostDto;
+import hello.board.global.validator.UserValidator;
+import hello.board.infrastructure.web.user.request.UserForm;
+import hello.board.infrastructure.web.user.response.UserLikedPostsDto;
+import hello.board.infrastructure.web.user.response.UserPostsAndCommentsDto;
 import hello.board.infrastructure.web.user.response.UserResponse;
 import hello.board.service.EntityFinder;
-import hello.board.service.user.dto.UserForm;
-import hello.board.service.user.dto.UserLikedPostsDto;
-import hello.board.service.user.dto.UserPostsAndCommentsDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,84 +19,37 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final PostRepository postRepository;
-    private final LikeRepository likeRepository;
-    private final CommentRepository commentRepository;
+    private final PasswordEncoder passwordEncoder;
     private final EntityFinder entityFinder;
+    private final UserValidator userValidator;
 
     @Transactional
     public UserResponse saveUser(UserForm form) {
-        duplicate(form);
+        userValidator.validateDuplicateUser(form);
 
-        String encodedPassword = bCryptPasswordEncoder.encode(form.getPassword());
-        User savedUser = form.toEntity(encodedPassword);
+        User user = User.create(form, passwordEncoder);
 
-        userRepository.save(savedUser);
-        return UserResponse.of(savedUser);
-    }
-
-    public UserPostsAndCommentsDto getUserPostsAndComments(String username) {
-        User user = entityFinder.getLoginUser(username);
-
-        List<MyPagePostDto> posts = getMyPagePostDto(user);
-        List<CommentDto> comments = getCommentDto(user);
-
-        return UserPostsAndCommentsDto.of(posts, comments);
-    }
-
-    public UserLikedPostsDto getUserLikedPosts(String username) {
-        User user = entityFinder.getLoginUser(username);
-        List<Like> userLikes = likeRepository.findByUserOrderByCreateDateTimeDesc(user);
-
-        List<LikedPostDto> likePosts = getLikePosts(userLikes);
-
-        return UserLikedPostsDto.of(likePosts);
+        userRepository.save(user);
+        return UserResponse.of(user);
     }
 
     @Transactional
     public void deleteMember(String username) {
         User user = entityFinder.getLoginUser(username);
-        postRepository.deleteAllByUser(user);
-        commentRepository.deleteAllByUser(user);
-        likeRepository.deleteAllByUser(user);
 
         userRepository.delete(user);
     }
 
-    // 입력 폼 검증
-    public boolean isUsernameDuplicate(String username) {
-        return userRepository.existsByUsername(username);
+    public UserPostsAndCommentsDto getUserPostsAndComments(String username) {
+        User user = entityFinder.getLoginUser(username);
+
+        return UserPostsAndCommentsDto.of(user);
     }
 
-    public boolean isNicknameDuplicate(String nickname) {
-        return userRepository.existsByNickname(nickname);
+    public UserLikedPostsDto getUserLikedPosts(String username) {
+        User user = entityFinder.getLoginUser(username);
+
+        return UserLikedPostsDto.of(user.getLikes());
     }
 
-    private void duplicate(UserForm form) {
-        if (userRepository.existsByUsername(form.getUsername())) {
-            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
-        }
-        if (userRepository.existsByNickname(form.getNickname())) {
-            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-        }
-    }
-
-    private List<MyPagePostDto> getMyPagePostDto(User user) {
-        return postRepository.findByUserOrderByCreateDateTimeDesc(user).stream()
-                .map(MyPagePostDto::of)
-                .toList();
-    }
-
-    private static List<LikedPostDto> getLikePosts(List<Like> userLikes) {
-        return userLikes.stream()
-                .map(LikedPostDto::of)
-                .toList();
-    }
-
-    private List<CommentDto> getCommentDto(User user) {
-        return commentRepository.findByUserOrderByCreateDateTimeDesc(user).stream()
-                .map(CommentDto::of)
-                .toList();
-    }
 }
