@@ -1,5 +1,6 @@
-package hello.board.service.user.dto;
+package hello.board.infrastructure.web.user.response;
 
+import hello.board.domain.like.Like;
 import hello.board.infrastructure.web.post.response.LikedPostDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,9 +17,12 @@ public class UserLikedPostsDto {
         this.likedPosts = posts;
     }
 
-    public static UserLikedPostsDto of(List<LikedPostDto> likedPosts) {
+    public static UserLikedPostsDto of(List<Like> likedPosts) {
         return UserLikedPostsDto.builder()
-                .posts(likedPosts)
+                .posts(likedPosts.stream()
+                        .map(LikedPostDto::of)
+                        .toList()
+                )
                 .build();
     }
 }
