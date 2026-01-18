@@ -33,7 +33,6 @@ public class MessageService {
         User receiver = entityFinder.getLoginUser(username);
 
         return MessageDto.listOf(messageRepository.findActiveReceivedMessages(receiver));
-
     }
 
     public List<MessageDto> getSentMessages(String username) {
