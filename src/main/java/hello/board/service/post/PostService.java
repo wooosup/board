@@ -7,15 +7,20 @@ import hello.board.global.annotation.CheckPostOwner;
 import hello.board.global.annotation.CreateStatistics;
 import hello.board.infrastructure.persistence.repository.PostQueryRepository;
 import hello.board.infrastructure.web.comment.response.CommentDto;
+import hello.board.infrastructure.web.image.response.ImageDto;
 import hello.board.infrastructure.web.post.request.PostForm;
 import hello.board.infrastructure.web.post.request.UpdatePostForm;
-import hello.board.infrastructure.web.post.response.*;
+import hello.board.infrastructure.web.post.response.MainPostDto;
+import hello.board.infrastructure.web.post.response.PostDetailDto;
+import hello.board.infrastructure.web.post.response.PostResponse;
+import hello.board.infrastructure.web.post.response.PostSearch;
+import hello.board.infrastructure.web.post.response.PostWithCommentsDto;
 import hello.board.service.EntityFinder;
 import hello.board.service.comment.CommentService;
 import hello.board.service.image.PostImageManager;
-import hello.board.service.image.dto.ImageDto;
 import hello.board.service.poststatistics.ViewService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +28,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

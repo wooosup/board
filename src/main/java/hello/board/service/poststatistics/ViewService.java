@@ -23,7 +23,7 @@ public class ViewService {
         String redisKey = VIEWED_KEY_PREFIX + postId + ":" + clientIdentifier;
 
         Boolean hasViewed = redisTemplate.hasKey(redisKey);
-        if (Boolean.FALSE.equals(hasViewed)) {
+        if (!hasViewed) {
             // 조회수 증가
             redisTemplate.opsForZSet().incrementScore(VIEW_COUNT_KEY_PREFIX, postId.toString(), 1);
 

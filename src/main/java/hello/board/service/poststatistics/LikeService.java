@@ -4,17 +4,16 @@ import hello.board.domain.like.Like;
 import hello.board.domain.like.LikeRepository;
 import hello.board.domain.post.Post;
 import hello.board.domain.user.User;
+import hello.board.infrastructure.web.like.response.LikeResponse;
 import hello.board.service.EntityFinder;
-import hello.board.service.poststatistics.dto.LikeResponse;
 import jakarta.persistence.OptimisticLockException;
+import java.sql.SQLTransactionRollbackException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.SQLTransactionRollbackException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

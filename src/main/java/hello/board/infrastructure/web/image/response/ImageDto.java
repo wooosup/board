@@ -1,4 +1,4 @@
-package hello.board.service.image.dto;
+package hello.board.infrastructure.web.image.response;
 
 import hello.board.domain.image.Image;
 import lombok.Builder;

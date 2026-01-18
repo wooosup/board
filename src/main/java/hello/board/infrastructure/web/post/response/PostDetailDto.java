@@ -2,12 +2,11 @@ package hello.board.infrastructure.web.post.response;
 
 import hello.board.domain.TimeUtil;
 import hello.board.domain.post.Post;
-import hello.board.service.image.dto.ImageDto;
-import lombok.Builder;
-import lombok.Getter;
-
+import hello.board.infrastructure.web.image.response.ImageDto;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 public class PostDetailDto {

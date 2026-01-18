@@ -1,11 +1,10 @@
 package hello.board.infrastructure.web.post.request;
 
-import hello.board.service.image.dto.ImageDto;
+import hello.board.infrastructure.web.image.response.ImageDto;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Getter
 public class UpdatePostForm {

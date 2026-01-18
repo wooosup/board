@@ -1,4 +1,4 @@
-package hello.board.service.poststatistics.dto;
+package hello.board.infrastructure.web.like.response;
 
 import lombok.Getter;
 

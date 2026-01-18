@@ -1,16 +1,15 @@
 package hello.board.service.message;
 
 import hello.board.domain.message.Message;
-import hello.board.domain.user.User;
 import hello.board.domain.message.MessageRepository;
+import hello.board.domain.user.User;
+import hello.board.infrastructure.web.message.request.MessageForm;
+import hello.board.infrastructure.web.message.response.MessageDto;
 import hello.board.service.EntityFinder;
-import hello.board.service.message.dto.MessageDto;
-import hello.board.service.message.dto.MessageForm;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

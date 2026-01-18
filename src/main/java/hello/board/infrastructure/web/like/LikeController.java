@@ -1,12 +1,14 @@
-package hello.board.infrastructure.web.post;
+package hello.board.infrastructure.web.like;
 
-import hello.board.service.poststatistics.dto.LikeResponse;
+import hello.board.infrastructure.web.like.response.LikeResponse;
 import hello.board.service.poststatistics.LikeService;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

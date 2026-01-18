@@ -1,15 +1,14 @@
 package hello.board.service.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import hello.board.IntegrationTestSupport;
 import hello.board.domain.Role;
 import hello.board.domain.user.User;
-import hello.board.service.message.dto.MessageDto;
-import hello.board.service.message.dto.MessageForm;
-import org.junit.jupiter.api.Test;
-
+import hello.board.infrastructure.web.message.request.MessageForm;
+import hello.board.infrastructure.web.message.response.MessageDto;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 class MessageServiceTest extends IntegrationTestSupport {
 

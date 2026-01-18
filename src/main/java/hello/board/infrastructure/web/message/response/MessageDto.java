@@ -1,4 +1,4 @@
-package hello.board.service.message.dto;
+package hello.board.infrastructure.web.message.response;
 
 import hello.board.domain.message.Message;
 import lombok.Builder;
