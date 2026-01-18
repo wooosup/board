@@ -24,7 +24,7 @@ public class MessageService {
         User sender = entityFinder.getLoginUser(senderUsername);
         User receiver = entityFinder.getLoginUser(form.getReceiverUsername());
 
-        Message message = form.toEntity(sender, receiver);
+        Message message = Message.create(sender, receiver, form.getContent());
 
         return MessageDto.of(messageRepository.save(message));
     }
@@ -32,42 +32,32 @@ public class MessageService {
     public List<MessageDto> getReceivedMessages(String username) {
         User receiver = entityFinder.getLoginUser(username);
 
-        return mapMessagesToDto(messageRepository.findActiveReceivedMessages(receiver));
+        return MessageDto.listOf(messageRepository.findActiveReceivedMessages(receiver));
 
     }
 
     public List<MessageDto> getSentMessages(String username) {
         User sender = entityFinder.getLoginUser(username);
 
-        return mapMessagesToDto(messageRepository.findActiveSentMessages(sender));
+        return MessageDto.listOf(messageRepository.findActiveSentMessages(sender));
     }
-
 
     public MessageDto getMessageDtoById(Long messageId) {
         Message message = entityFinder.getMessage(messageId);
-
         return MessageDto.of(message);
     }
-
 
     @Transactional
     public void deleteAllMessages(String username) {
         User user = entityFinder.getLoginUser(username);
 
-        // 수신자에 의해 삭제
+        // 받은 메시지 삭제
         messageRepository.findActiveReceivedMessages(user)
-                .forEach(Message::markDeletedByReceiver);
+                .forEach(message -> message.deleteBy(user));
 
-        // 발신자에 의해 삭제
+        // 보낸 메시지 삭제
         messageRepository.findActiveSentMessages(user)
-                .forEach(Message::markDeletedBySender);
+                .forEach(message -> message.deleteBy(user));
     }
-
-    private List<MessageDto> mapMessagesToDto(List<Message> messages) {
-        return messages.stream()
-                .map(MessageDto::of)
-                .toList();
-    }
-
 
 }
