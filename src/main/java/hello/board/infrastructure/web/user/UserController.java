@@ -1,13 +1,16 @@
 package hello.board.infrastructure.web.user;
 
-import hello.board.service.message.dto.MessageDto;
-import hello.board.service.user.dto.UserForm;
-import hello.board.service.user.dto.UserLikedPostsDto;
-import hello.board.service.user.dto.UserPostsAndCommentsDto;
+import hello.board.infrastructure.web.message.response.MessageDto;
+import hello.board.infrastructure.web.user.request.UserForm;
+import hello.board.infrastructure.web.user.response.UserLikedPostsDto;
+import hello.board.infrastructure.web.user.response.UserPostsAndCommentsDto;
+import hello.board.infrastructure.web.user.validator.UserSignUpValidator;
 import hello.board.service.message.MessageService;
 import hello.board.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.security.Principal;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -21,9 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
-import java.util.List;
-
 
 @Controller
 @RequiredArgsConstructor
@@ -35,10 +35,10 @@ public class UserController {
 
     private final UserService userService;
     private final MessageService messageService;
+    private final UserSignUpValidator signUpValidator;
 
     @GetMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) String error,
-                        Model model) {
+    public String login(@RequestParam(value = "error", required = false) String error, Model model) {
         if (error != null) {
             model.addAttribute("errorMessage", "로그인 정보가 없습니다. 확인 후 다시 입력해 주십시오.");
         }
@@ -52,18 +52,15 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Validated @ModelAttribute("form") UserForm form,
-                         BindingResult result,
+    public String signup(@Validated @ModelAttribute("form") UserForm form, BindingResult result,
                          RedirectAttributes redirect) {
+        signUpValidator.validate(form, result);
+
         if (result.hasErrors()) {
             return USERS_SIGNUP;
         }
 
-        if (!validationUserForm(form, result)) {
-            return USERS_SIGNUP;
-        }
-
-        registerUser(form);
+        userService.saveUser(form);
 
         setUpSuccessRedirect(redirect);
         return REDIRECT_LOGIN;
@@ -71,7 +68,8 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        new SecurityContextLogoutHandler().logout(request, response,
+                SecurityContextHolder.getContext().getAuthentication());
         return REDIRECT_LOGIN;
     }
 
@@ -110,21 +108,8 @@ public class UserController {
         return "redirect:/login";
     }
 
-    private static void setUpSuccessRedirect(RedirectAttributes redirect) {
+    private void setUpSuccessRedirect(RedirectAttributes redirect) {
         redirect.addFlashAttribute("successMessage", "회원가입이 완료되었습니다!");
     }
 
-    private void registerUser(UserForm form) {
-        userService.saveUser(form);
-    }
-
-    private boolean validationUserForm(UserForm form, BindingResult result) {
-        if (userService.isUsernameDuplicate(form.getUsername())) {
-            result.rejectValue("username", "duplicate", "이미 존재하는 아이디입니다.");
-        }
-        if (userService.isNicknameDuplicate(form.getNickname())) {
-            result.rejectValue("nickname", "duplicate", "이미 존재하는 닉네임입니다.");
-        }
-        return !result.hasErrors();
-    }
 }
