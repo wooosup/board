@@ -1,17 +1,17 @@
 package hello.board.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import hello.board.IntegrationTestSupport;
 import hello.board.domain.comment.Comment;
 import hello.board.domain.post.Post;
 import hello.board.domain.user.User;
-import hello.board.service.user.dto.UserForm;
-import hello.board.service.user.dto.UserLikedPostsDto;
-import hello.board.service.user.dto.UserPostsAndCommentsDto;
+import hello.board.infrastructure.web.user.request.UserForm;
+import hello.board.infrastructure.web.user.response.UserLikedPostsDto;
+import hello.board.infrastructure.web.user.response.UserPostsAndCommentsDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UserServiceTest extends IntegrationTestSupport {
 
@@ -60,6 +60,7 @@ class UserServiceTest extends IntegrationTestSupport {
                 .hasMessage("이미 존재하는 닉네임입니다.");
     }
 
+    @DisplayName("사용자 작성 글과 댓글 조회")
     @Test
     void getUserPostsAndComments() throws Exception {
         //given
@@ -82,6 +83,9 @@ class UserServiceTest extends IntegrationTestSupport {
                 .content("댓글")
                 .build();
         commentRepository.save(comment);
+
+        em.flush();
+        em.clear();
 
         //when
         UserPostsAndCommentsDto result = userService.getUserPostsAndComments("wss3325");
@@ -107,6 +111,9 @@ class UserServiceTest extends IntegrationTestSupport {
                 .user(user)
                 .build();
         postRepository.save(post);
+
+        em.flush();
+        em.clear();
 
         likeService.likePost(post.getId(), user.getUsername());
 
