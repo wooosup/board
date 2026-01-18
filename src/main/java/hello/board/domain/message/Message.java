@@ -1,15 +1,21 @@
 package hello.board.domain.message;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 import hello.board.domain.user.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-
-import static jakarta.persistence.FetchType.LAZY;
 
 @Getter
 @Entity
@@ -29,6 +35,7 @@ public class Message {
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
 
+    @Column(nullable = false, length = 1000)
     private String content;
 
     @Column(name = "sent_time")
@@ -36,8 +43,6 @@ public class Message {
 
     @Column(name = "is_read")
     private boolean isRead = false;
-
-    // 발신자와 수신자의 개별 삭제 여부
     private boolean isDeletedBySender = false;
     private boolean isDeletedByReceiver = false;
 
@@ -49,13 +54,21 @@ public class Message {
         this.sentTime = LocalDateTime.now();
     }
 
-    // 발신자에 의한 삭제
-    public void markDeletedBySender() {
-        this.isDeletedBySender = true;
+    public static Message create(User sender, User receiver, String content) {
+        return Message.builder()
+                .sender(sender)
+                .receiver(receiver)
+                .content(content)
+                .build();
     }
 
-    // 수신자에 의한 삭제
-    public void markDeletedByReceiver() {
-        this.isDeletedByReceiver = true;
+    public void deleteBy(User user) {
+        if (this.sender.equals(user)) {
+            this.isDeletedBySender = true;
+        }
+        if (this.receiver.equals(user)) {
+            this.isDeletedByReceiver = true;
+        }
     }
+
 }

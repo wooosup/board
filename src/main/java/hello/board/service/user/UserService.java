@@ -52,4 +52,9 @@ public class UserService {
         return UserLikedPostsDto.of(user.getLikes());
     }
 
+    public String getNicknameByUserName(String username) {
+        return userRepository.findByUsername(username)
+                .map(User::getNickname)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    }
 }

@@ -4,6 +4,7 @@ import hello.board.infrastructure.web.message.request.MessageForm;
 import hello.board.infrastructure.web.message.response.MessageDto;
 import hello.board.service.EntityFinder;
 import hello.board.service.message.MessageService;
+import hello.board.service.user.UserService;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,32 +25,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MessageController {
 
     private final MessageService messageService;
+    private final UserService userService;
     private final EntityFinder entityFinder;
 
     @GetMapping("/send")
     public String sendMessageForm(@RequestParam(value = "receiverUsername", required = false) String receiverUsername,
                                   Model model) {
-        MessageForm messageForm = MessageForm.builder().build();
+        MessageForm.MessageFormBuilder messageForm = MessageForm.builder();
 
         if (receiverUsername != null) {
-            String receiverNickname = entityFinder.getUserNickname(receiverUsername);
-            messageForm = MessageForm.builder()
-                    .receiverUsername(receiverUsername)
-                    .receiverNickname(receiverNickname)
-                    .build();
+            String receiverNickname = userService.getNicknameByUserName(receiverUsername);
+
+            messageForm.receiverUsername(receiverUsername)
+                       .receiverNickname(receiverNickname);
         }
 
         model.addAttribute("messageForm", messageForm);
         return "messages/sendMessage";
     }
+
     @PostMapping("/send")
     public String sendMessage(@Validated @ModelAttribute("messageForm") MessageForm form,
                               BindingResult result, Principal pri) {
         if (result.hasErrors()) {
             return "messages/sendMessage";
         }
-        String senderUsername = pri.getName();
-        messageService.sendMessage(senderUsername, form);
+        messageService.sendMessage(pri.getName(), form);
         return "redirect:/";
     }
 
@@ -64,4 +65,5 @@ public class MessageController {
         messageService.deleteAllMessages(principal.getName());
         return "redirect:/mypage";
     }
+
 }

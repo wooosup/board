@@ -42,10 +42,4 @@ public class EntityFinder {
                 .orElseThrow(() -> new EntityNotFoundException("해당 쪽지를 찾을 수 없습니다."));
     }
 
-    //  id를 닉네임으로 반환
-    public String getUserNickname(String username) {
-        return userRepository.findByUsername(username)
-                .map(User::getNickname)
-                .orElseThrow(() -> new EntityNotFoundException("해당 사용자를 찾을 수 없습니다."));
-    }
 }

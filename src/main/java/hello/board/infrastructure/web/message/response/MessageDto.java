@@ -1,6 +1,7 @@
 package hello.board.infrastructure.web.message.response;
 
 import hello.board.domain.message.Message;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -39,4 +40,11 @@ public class MessageDto {
                 .sentTime(message.getSentTime())
                 .build();
     }
+
+    public static List<MessageDto> listOf(List<Message> messages) {
+        return messages.stream()
+                .map(MessageDto::of)
+                .toList();
+    }
+
 }
