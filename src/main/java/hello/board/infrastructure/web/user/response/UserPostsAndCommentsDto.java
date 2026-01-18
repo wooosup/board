@@ -1,5 +1,6 @@
-package hello.board.service.user.dto;
+package hello.board.infrastructure.web.user.response;
 
+import hello.board.domain.user.User;
 import hello.board.infrastructure.web.comment.response.CommentDto;
 import hello.board.infrastructure.web.post.response.MyPagePostDto;
 import lombok.Builder;
@@ -19,10 +20,10 @@ public class UserPostsAndCommentsDto {
         this.comments = comments;
     }
 
-    public static UserPostsAndCommentsDto of(List<MyPagePostDto> posts, List<CommentDto> comments) {
+    public static UserPostsAndCommentsDto of(User user) {
         return UserPostsAndCommentsDto.builder()
-                .posts(posts)
-                .comments(comments)
+                .posts(user.getPosts().stream().map(MyPagePostDto::of).toList())
+                .comments(user.getComments().stream().map(CommentDto::of).toList())
                 .build();
     }
 }
