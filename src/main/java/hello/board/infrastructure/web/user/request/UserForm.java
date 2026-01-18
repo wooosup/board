@@ -1,7 +1,5 @@
-package hello.board.service.user.dto;
+package hello.board.infrastructure.web.user.request;
 
-import hello.board.domain.Role;
-import hello.board.domain.user.User;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -28,12 +26,4 @@ public class UserForm {
         this.password = password;
     }
 
-    public User toEntity(String encodedPassword) {
-        return User.builder()
-                .username(username)
-                .nickname(nickname)
-                .password(encodedPassword)
-                .grade(Role.USER)
-                .build();
-    }
 }
