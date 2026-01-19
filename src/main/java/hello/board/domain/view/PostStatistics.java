@@ -1,4 +1,4 @@
-package hello.board.domain.post;
+package hello.board.domain.view;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,15 +16,23 @@ public class PostStatistics implements Serializable {
 
     @Id
     private String postId;
-    private Integer viewCount = 0;
+    private Integer viewCount;
 
     @Builder
-    private PostStatistics(String postId, Integer viewCount) {
-        this.postId = postId;
+    private PostStatistics(Long postId, Integer viewCount) {
+        this.postId = String.valueOf(postId);
         this.viewCount = (viewCount == null) ? 0 : viewCount;
+    }
+
+    public static PostStatistics create(Long postId) {
+        return PostStatistics.builder()
+                .postId(postId)
+                .viewCount(0)
+                .build();
     }
 
     public void increaseViewCount() {
         this.viewCount++;
     }
+
 }
