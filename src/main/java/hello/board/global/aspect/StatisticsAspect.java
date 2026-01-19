@@ -1,7 +1,7 @@
 package hello.board.global.aspect;
 
-import hello.board.domain.post.PostStatistics;
-import hello.board.infrastructure.persistence.repository.PostStatisticsRepository;
+import hello.board.domain.view.PostStatistics;
+import hello.board.infrastructure.persistence.repository.view.PostStatisticsRepository;
 import hello.board.infrastructure.web.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -20,8 +20,9 @@ public class StatisticsAspect {
         if (postResponse == null) return;
 
         postStatisticsRepository.save(PostStatistics.builder()
-                .postId(String.valueOf(postResponse.getId()))
+                .postId(postResponse.getId())
                 .viewCount(0)
                 .build());
     }
+
 }
