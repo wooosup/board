@@ -36,21 +36,23 @@ public class LikeService {
         Optional<Like> like = likeRepository.findByPostIdAndUsername(postId, username);
 
         if (like.isPresent()) {
-            // 좋아요 취소
-            likeRepository.delete(like.get());
-            post.decrementLikeCount();
-            int likeCount = post.getLikeCount();
-            return new LikeResponse(likeCount, false);
-        } else {
-            // 좋아요 추가
-            Like newLike = Like.builder()
-                    .user(user)
-                    .post(post)
-                    .build();
-            likeRepository.save(newLike);
-            post.incrementLikeCount();
-            int likeCount = post.getLikeCount();
-            return new LikeResponse(likeCount, true);
+            return unLike(like.get(), post);
         }
+        return addLike(user, post);
     }
+
+    private LikeResponse addLike(User user, Post post) {
+        Like newLike = Like.create(user, post);
+
+        likeRepository.save(newLike);
+        return LikeResponse.of(post.getLikeCount(), true);
+    }
+
+    private LikeResponse unLike(Like like, Post post) {
+        like.disconnect();
+
+        likeRepository.delete(like);
+        return LikeResponse.of(post.getLikeCount(), false);
+    }
+
 }
