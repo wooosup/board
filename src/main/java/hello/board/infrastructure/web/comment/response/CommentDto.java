@@ -2,12 +2,12 @@ package hello.board.infrastructure.web.comment.response;
 
 import hello.board.domain.TimeUtil;
 import hello.board.domain.comment.Comment;
-import lombok.Builder;
-import lombok.Getter;
-
+import hello.board.domain.post.Post;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 public class CommentDto {
@@ -54,4 +54,19 @@ public class CommentDto {
         }
         return dto;
     }
+
+    public static List<CommentDto> listOf(Post post) {
+        List<Comment> comments = post.getComments().stream()
+                .filter(CommentDto::hasNotParent)
+                .toList();
+
+        return comments.stream()
+                .map(CommentDto::of)
+                .toList();
+    }
+
+    private static boolean hasNotParent(Comment comment) {
+        return comment.getParent() == null;
+    }
+
 }
