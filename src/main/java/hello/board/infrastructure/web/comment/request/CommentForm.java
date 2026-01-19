@@ -1,8 +1,5 @@
 package hello.board.infrastructure.web.comment.request;
 
-import hello.board.domain.comment.Comment;
-import hello.board.domain.post.Post;
-import hello.board.domain.user.User;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +19,4 @@ public class CommentForm {
         this.parentId = parentId;
     }
 
-    public Comment toEntity(User user, Post post, Comment parent) {
-        return Comment.builder()
-                .content(this.content)
-                .user(user)
-                .post(post)
-                .parent(parent)
-                .build();
-    }
 }
