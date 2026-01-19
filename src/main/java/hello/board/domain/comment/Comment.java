@@ -1,18 +1,23 @@
 package hello.board.domain.comment;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 import hello.board.domain.BaseEntity;
 import hello.board.domain.post.Post;
 import hello.board.domain.user.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -50,11 +55,41 @@ public class Comment extends BaseEntity {
         this.parent = parent;
     }
 
+    public static Comment create(String content, Post post, User user, Comment parent) {
+        Comment comment = Comment.builder()
+                .content(content)
+                .post(post)
+                .user(user)
+                .parent(parent)
+                .build();
+
+        if (parent != null) {
+            parent.addReply(comment);
+        }
+        return comment;
+    }
+
+    private void addReply(Comment reply) {
+        this.children.add(reply);
+    }
+
     public void updateComment(String newContent) {
         this.content = newContent;
     }
 
-    public void markAsDeleted() {
+    public void delete() {
         this.deleted = true;
+    }
+
+    public void removeChild(Comment current) {
+        this.children.remove(current);
+    }
+
+    public boolean isPhysicallyDeletable() {
+        return this.deleted && hasNoActiveChildren();
+    }
+
+    private boolean hasNoActiveChildren() {
+        return children.isEmpty() || children.stream().allMatch(Comment::isDeleted);
     }
 }
