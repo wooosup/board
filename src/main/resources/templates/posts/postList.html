@@ -136,23 +136,23 @@
     <nav aria-label="Page navigation" th:if="${posts != null}">
         <ul class="pagination justify-content-center">
             <!-- 이전 페이지 버튼 -->
-            <li class="page-item" th:classappend="${startPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/(page=${startPage - 1}, keyword=${search.keyword}, searchField=${search.searchField})}"
+            <li class="page-item" th:classappend="${pagination.startPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${pagination.startPage - 1}, keyword=${search.keyword}, searchField=${search.searchField})}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
 
             <!-- 페이지 번호 버튼 -->
-            <li th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
-                th:classappend="${pageNum == currentPage} ? 'active' : ''" class="page-item">
+            <li th:each="pageNum : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"
+                th:classappend="${pageNum == pagination.currentPage} ? 'active' : ''" class="page-item">
                 <a class="page-link" th:href="@{/(page=${pageNum}, keyword=${search.keyword}, searchField=${search.searchField})}"
                    th:text="${pageNum + 1}">1</a>
             </li>
 
             <!-- 다음 페이지 버튼 -->
-            <li class="page-item" th:classappend="${endPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/(page=${endPage + 1}, keyword=${search.keyword}, searchField=${search.searchField})}"
+            <li class="page-item" th:classappend="${pagination.endPage == pagination.totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${pagination.endPage + 1}, keyword=${search.keyword}, searchField=${search.searchField})}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
@@ -188,8 +188,7 @@
     }
 
     function confirmLogout() {
-        var logoutConfirm = confirm("확인을 누르면 로그아웃이 완료됩니다.");
-        return logoutConfirm;
+        return confirm("확인을 누르면 로그아웃이 완료됩니다.");
     }
 </script>
 

@@ -10,6 +10,7 @@
         body {
             background-color: #f8f9fa;
         }
+
         .post-container {
             background-color: #ffffff;
             padding: 30px;
@@ -60,7 +61,7 @@
         }
 
         .img-fluid.custom-image {
-            max-width: 600px; /* 원하는 최대 너비 설정 */
+            max-width: 600px;
             width: 100%;
             height: auto;
         }
@@ -74,14 +75,12 @@
             gap: 8px;
         }
 
-        /* 좋아요 버튼 컨테이너 */
         .like-section {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* 버튼 자체 */
         .like-btn {
             display: flex;
             align-items: center;
@@ -97,7 +96,6 @@
             outline: none;
         }
 
-        /* 버튼 호버 시 */
         .like-btn:hover {
             color: #212529;
             transform: translateY(-2px);
@@ -107,7 +105,6 @@
             font-size: 2rem;
         }
 
-        /* 버튼 클릭 시 */
         .like-btn:active {
             transform: translateY(0);
         }
@@ -125,8 +122,6 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="post-container">
-                <!-- 플래시 메시지 영역 -->
-
                 <h2 class="post-title" th:text="${post.title}">게시글 제목</h2>
                 <p class="post-meta">
                     작성자: <span class="post-author" th:text="${post.nickname}">작성자</span> ·
@@ -342,7 +337,7 @@
                     <textarea name="content" class="form-control" rows="2" placeholder="답글을 입력하세요"
                               required></textarea>
                                     </div>
-<!--                                    <button type="submit" class="btn btn-primary btn-sm">등록</button>-->
+                                    <!--                                    <button type="submit" class="btn btn-primary btn-sm">등록</button>-->
                                     <button type="button" class="btn btn-primary" onclick="showLoginModal()">작성</button>
                                 </form>
                             </div>
@@ -393,7 +388,8 @@
                                         <form th:action="@{'/post/' + ${post.id} + '/comment/edit/' + ${grandChild.id}}"
                                               method="post">
                                             <div class="mb-3">
-                                                <textarea name="content" class="form-control" rows="2" required th:text="${grandChild.content}"></textarea>
+                                                <textarea name="content" class="form-control" rows="2" required
+                                                          th:text="${grandChild.content}"></textarea>
                                             </div>
                                             <button type="submit" class="btn btn-success btn-sm me-2">저장</button>
                                             <button type="button" class="btn btn-secondary btn-sm"
@@ -411,7 +407,8 @@
                 <div class="mt-4">
                     <h5>댓글 작성</h5>
                     <form th:if="${#authentication.isAuthenticated()}"
-                          th:action="@{'/post/' + ${post.id} + '/comment/create'}" th:object="${commentForm}" method="post">
+                          th:action="@{'/post/' + ${post.id} + '/comment/create'}" th:object="${commentForm}"
+                          method="post">
                         <div class="mb-3">
                             <textarea id="content" th:field="*{content}" class="form-control" rows="3"
                                       placeholder="댓글을 입력하세요" required></textarea>
@@ -455,9 +452,6 @@
 <!-- Bootstrap JS 및 의존성 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // function showLoginModal() {
-    //     $('#loginModal').modal('show');
-    // }
     function showLoginModal() {
         const loginModalElement = document.getElementById('loginModal');
         if (loginModalElement) {
@@ -483,13 +477,12 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                // CSRF 토큰 헤더가 필요하다면 여기에 추가해야 합니다.
             },
         })
             .then(response => {
-                if (response.redirected || response.status === 401) { // 401 Unauthorized도 함께 처리
+                if (response.redirected || response.status === 401) {
                     showLoginModal();
-                    return; // 여기서 함수 실행을 멈춥니다.
+                    return;
                 }
 
                 if (response.ok) {
@@ -507,31 +500,7 @@
             .catch(error => {
                 console.error("Error:", error);
             });
-    }    // document.getElementById("like-button").addEventListener("click", function () {
-    //     const postId = document.getElementById("like-form").getAttribute("data-post-id");
-    //
-    //     fetch(`/api/likes/${postId}`, {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //     })
-    //         .then(response => {
-    //             if (response.ok) {
-    //                 return response.json(); // 서버에서 새로운 좋아요 개수를 반환
-    //             } else {
-    //                 throw new Error("처리에 실패했습니다.");
-    //             }
-    //         })
-    //         .then(data => {
-    //             // 좋아요 개수 업데이트
-    //             document.querySelector("#like-count").textContent = data.likeCount;
-    //         })
-    //         .catch(error => {
-    //             console.error("Error:", error);
-    //         });
-    // });
-
+    }
 
     function toggleEditForm(elementId) {
         const form = document.getElementById(elementId);
