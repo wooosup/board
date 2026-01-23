@@ -1,12 +1,24 @@
 package hello.board.controller.post;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import hello.board.ControllerTestSupport;
 import hello.board.domain.Role;
 import hello.board.domain.post.Post;
 import hello.board.domain.user.User;
+import hello.board.infrastructure.web.post.request.UpdatePostForm;
 import hello.board.infrastructure.web.post.response.MainPostDto;
 import hello.board.infrastructure.web.post.response.PostSearch;
-import hello.board.infrastructure.web.post.request.UpdatePostForm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,14 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 class PostControllerTest extends ControllerTestSupport {
 
@@ -52,7 +56,7 @@ class PostControllerTest extends ControllerTestSupport {
                         .with(csrf())
                 )
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("posts", "search", "currentPage", "totalPages", "startPage", "endPage"))
+                .andExpect(model().attributeExists("posts", "search", "pagination"))
                 .andExpect(view().name("posts/postList"))
                 .andDo(print());
     }
@@ -83,7 +87,7 @@ class PostControllerTest extends ControllerTestSupport {
                         .param("page", "1")
                 )
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("posts", "search", "totalPages"))
+                .andExpect(model().attributeExists("posts", "search", "pagination"))
                 .andExpect(view().name("posts/postList"))
                 .andDo(print());
     }
@@ -290,3 +294,4 @@ class PostControllerTest extends ControllerTestSupport {
                 .andDo(print());
     }
 }
+
