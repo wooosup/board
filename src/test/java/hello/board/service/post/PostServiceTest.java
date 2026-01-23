@@ -1,5 +1,9 @@
 package hello.board.service.post;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import hello.board.IntegrationTestSupport;
 import hello.board.domain.Role;
 import hello.board.domain.post.Post;
@@ -7,18 +11,12 @@ import hello.board.domain.user.User;
 import hello.board.global.exception.EntityNotFoundException;
 import hello.board.infrastructure.web.post.request.UpdatePostForm;
 import hello.board.infrastructure.web.post.response.PostResponse;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PostServiceTest extends IntegrationTestSupport {
 
@@ -48,14 +46,14 @@ class PostServiceTest extends IntegrationTestSupport {
     }
 
     @Test
-    void findPostException() throws Exception {
+    void readPostException() throws Exception {
         //given
         Long postId = 999L;
 
         // expect
-        assertThatThrownBy(() -> postService.findByPostId(postId, new MockHttpServletRequest()))
+        assertThatThrownBy(() -> postService.readPost(postId, null))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("게시글을 찾을 수 없습니다.");
+                .hasMessageContaining("게시글을 찾을 수 없습니다.");
     }
 
     @Test
