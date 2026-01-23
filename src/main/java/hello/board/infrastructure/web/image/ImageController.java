@@ -1,4 +1,4 @@
-package hello.board.infrastructure.web.post;
+package hello.board.infrastructure.web.image;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
