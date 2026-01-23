@@ -19,12 +19,10 @@ import hello.board.service.EntityFinder;
 import hello.board.service.comment.CommentService;
 import hello.board.service.image.PostImageManager;
 import hello.board.service.poststatistics.ViewService;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,34 +41,30 @@ public class PostService {
 
     @CreateStatistics
     @Transactional
-    public PostResponse savePost(PostForm form, List<MultipartFile> imageFiles) {
-        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
-        User loginUser = entityFinder.getLoginUser(loginId);
-
-        Post post = form.toEntity(loginUser);
-        Post savedPost = postRepository.save(post);
+    public PostResponse savePost(PostForm form, List<MultipartFile> imageFiles, String username) {
+        User writer = entityFinder.getLoginUser(username);
+        Post post = form.toEntity(writer);
 
         processImages(imageFiles, post);
 
-        return PostResponse.of(savedPost);
+        return PostResponse.of(postRepository.save(post));
     }
 
-    public PostDetailDto findByPostId(Long postId, HttpServletRequest request) {
+    @Transactional
+    public PostWithCommentsDto readPost(Long postId, String clientIp) {
         Post post = entityFinder.getPost(postId);
-        viewService.handleView(postId, request);
 
-        return createPostDetailDto(postId, post);
-    }
-
-    public PostWithCommentsDto findPostWithComments(Long postId, HttpServletRequest request) {
-        PostDetailDto postDetail = findByPostId(postId, request);
+        viewService.increaseViewCount(postId, clientIp);
+        Integer viewCount = viewService.getViewCount(postId);
         List<CommentDto> comments = commentService.findAll(postId);
 
+        PostDetailDto postDetail = PostDetailDto.of(post, viewCount, post.getLikeCount());
         return PostWithCommentsDto.of(postDetail, comments);
     }
 
     public UpdatePostForm findPostForm(Long postId) {
         Post post = entityFinder.getPost(postId);
+
         List<ImageDto> images = post.getImages().stream()
                 .map(ImageDto::of)
                 .toList();
@@ -88,7 +82,7 @@ public class PostService {
         Post post = entityFinder.getPost(postId);
 
         processImageUpdates(imageFiles, imageIdsToDelete, post);
-        updatePostContent(form, post);
+        post.updatePost(form.getTitle(), form.getContent());
 
         return PostResponse.of(post);
     }
@@ -106,21 +100,10 @@ public class PostService {
         return postQueryRepository.searchPosts(search, page);
     }
 
-    private PostDetailDto createPostDetailDto(Long postId, Post post) {
-        Integer likeCount = post.getLikeCount();
-        Integer viewCount = viewService.getViewCount(postId);
-
-        return PostDetailDto.of(post, viewCount, likeCount);
-    }
-
     private void processImages(List<MultipartFile> imageFiles, Post post) {
         if (postImageManager.hasImageFiles(imageFiles)) {
             postImageManager.saveImagesToPost(imageFiles, post);
         }
-    }
-
-    private static void updatePostContent(UpdatePostForm form, Post post) {
-        post.updatePost(form.getTitle(), form.getContent());
     }
 
     private void processImageUpdates(List<MultipartFile> imageFiles, List<Long> imageIdsToDelete, Post post) {
