@@ -1,7 +1,7 @@
 package hello.board.service.image.local;
 
 import hello.board.service.image.FileStore;
-import hello.board.service.image.FileUtils;
+import hello.board.service.image.FileNameGenerator;
 import hello.board.global.exception.FileStorageException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -22,9 +22,11 @@ import static org.springframework.util.StringUtils.cleanPath;
 public class LocalFileStore implements FileStore {
 
     private final Path uploadDir;
+    private final FileNameGenerator fileNameGenerator;
 
-    public LocalFileStore(@Value("${file.dir}") String uploadDir) {
+    public LocalFileStore(@Value("${file.dir}") String uploadDir, FileNameGenerator fileNameGenerator) {
         this.uploadDir = Paths.get(uploadDir).toAbsolutePath().normalize();
+        this.fileNameGenerator = fileNameGenerator;
         try {
             Files.createDirectories(this.uploadDir);
         } catch (IOException e) {
@@ -35,7 +37,7 @@ public class LocalFileStore implements FileStore {
     @Override
     public String uploadFile(MultipartFile file) {
         String originalFileName = cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        String fileName = FileUtils.createFileName(originalFileName);
+        String fileName = fileNameGenerator.generate(originalFileName);
 
         try {
             if (originalFileName.contains("..")) {
