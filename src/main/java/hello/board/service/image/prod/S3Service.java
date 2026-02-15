@@ -1,8 +1,8 @@
 package hello.board.service.image.prod;
 
 import hello.board.global.exception.FileStorageException;
+import hello.board.service.image.FileNameGenerator;
 import hello.board.service.image.FileStore;
-import hello.board.service.image.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -27,11 +27,12 @@ public class S3Service implements FileStore {
     private String bucketName;
 
     private final S3Client s3Client;
+    private final FileNameGenerator fileNameGenerator;
 
     @Override
     public String uploadFile(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
-        String fileName = FileUtils.createFileName(originalFilename);
+        String fileName = fileNameGenerator.generate(originalFilename);
 
         try (InputStream inputStream = file.getInputStream()) {
             s3Client.putObject(PutObjectRequest.builder()

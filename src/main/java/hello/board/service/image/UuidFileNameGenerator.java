@@ -1,14 +1,17 @@
 package hello.board.service.image;
 
 import java.util.UUID;
+import org.springframework.stereotype.Component;
 
-public class FileUtils {
+@Component
+public class UuidFileNameGenerator implements FileNameGenerator {
 
-    public static String createFileName(String originalFileName) {
+    @Override
+    public String generate(String originalFileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(originalFileName));
     }
 
-    public static String getFileExtension(String fileName) {
+    private String getFileExtension(String fileName) {
         try {
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
