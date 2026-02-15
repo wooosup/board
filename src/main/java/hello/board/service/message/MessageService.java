@@ -49,13 +49,7 @@ public class MessageService {
     @Transactional
     public void deleteAllMessages(String username) {
         User user = entityFinder.getLoginUser(username);
-
-        // 받은 메시지 삭제
-        messageRepository.findActiveReceivedMessages(user)
-                .forEach(message -> message.deleteBy(user));
-
-        // 보낸 메시지 삭제
-        messageRepository.findActiveSentMessages(user)
+        messageRepository.findActiveMessages(user)
                 .forEach(message -> message.deleteBy(user));
     }
 

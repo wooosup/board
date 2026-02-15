@@ -14,4 +14,6 @@ public interface MessageRepository {
     List<Message> findActiveSentMessages(User sender);
 
     List<Message> findActiveReceivedMessages(User receiver);
+
+    List<Message> findActiveMessages(User user);
 }
