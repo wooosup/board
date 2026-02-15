@@ -15,4 +15,11 @@ public interface MessageJpaRepository extends JpaRepository<Message, Long> {
 
     @Query("SELECT m FROM Message m WHERE m.receiver = :receiver AND m.isDeletedByReceiver = false ORDER BY m.sentTime DESC")
     List<Message> findActiveReceivedMessages(@Param("receiver") User receiver);
+
+    @Query("""
+            SELECT m FROM Message m
+            WHERE (m.sender = :sender AND m.isDeletedBySender = false)
+               OR (m.receiver = :receiver AND m.isDeletedByReceiver = false)
+            """)
+    List<Message> findActiveMessages(@Param("sender") User sender, @Param("receiver") User receiver);
 }

@@ -34,4 +34,9 @@ public class MessageRepositoryImpl implements MessageRepository {
     public List<Message> findActiveReceivedMessages(User receiver) {
         return messageJpaRepository.findActiveReceivedMessages(receiver);
     }
+
+    @Override
+    public List<Message> findActiveMessages(User user) {
+        return messageJpaRepository.findActiveMessages(user, user);
+    }
 }

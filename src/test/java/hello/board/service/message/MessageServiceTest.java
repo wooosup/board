@@ -76,4 +76,40 @@ class MessageServiceTest extends IntegrationTestSupport {
                 .extracting("content")
                 .containsExactlyInAnyOrder("내용 무");
     }
+
+
+    @Test
+    void deleteAllMessages() throws Exception {
+        //given
+        User sender = User.builder()
+                .username("wss3325")
+                .nickname("user123")
+                .password("1234")
+                .grade(Role.USER)
+                .build();
+
+        User receiver = User.builder()
+                .username("krs3454")
+                .nickname("user321")
+                .password("1234")
+                .grade(Role.USER)
+                .build();
+        userRepository.saveAll(List.of(sender, receiver));
+
+        MessageForm form = MessageForm.builder()
+                .receiverUsername(receiver.getUsername())
+                .receiverNickname(receiver.getNickname())
+                .content("내용 무")
+                .build();
+
+        messageService.sendMessage(sender.getUsername(), form);
+
+        //when
+        messageService.deleteAllMessages(sender.getUsername());
+
+        //then
+        assertThat(messageService.getSentMessages(sender.getUsername())).isEmpty();
+        assertThat(messageService.getReceivedMessages(receiver.getUsername())).hasSize(1);
+    }
+
 }

@@ -63,12 +63,20 @@ public class Message {
     }
 
     public void deleteBy(User user) {
-        if (this.sender.equals(user)) {
+        if (isSender(user)) {
             this.isDeletedBySender = true;
         }
-        if (this.receiver.equals(user)) {
+        if (isReceiver(user)) {
             this.isDeletedByReceiver = true;
         }
+    }
+
+    private boolean isSender(User user) {
+        return this.sender.equals(user);
+    }
+
+    private boolean isReceiver(User user) {
+        return this.receiver.equals(user);
     }
 
 }
