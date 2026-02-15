@@ -25,11 +25,7 @@ public class CommentService {
     public CommentResponse saveComment(CommentForm form, String loginId) {
         User user = entityFinder.getLoginUser(loginId);
         Post post = entityFinder.getPost(form.getPostId());
-
-        Comment parent = null;
-        if (form.getParentId() != null) {
-            parent = entityFinder.getComment(form.getParentId());
-        }
+        Comment parent = findParentComment(form.getParentId());
 
         Comment comment = Comment.create(form.getContent(), post, user, parent);
 
@@ -63,15 +59,18 @@ public class CommentService {
         Comment current = comment;
 
         while (current != null && current.isPhysicallyDeletable()) {
-            Comment parent = current.getParent();
-
-            if (parent != null) {
-                parent.removeChild(current);
-            }
+            Comment parent = current.detachFromParent();
             commentRepository.delete(current);
 
             current = parent;
         }
+    }
+
+    private Comment findParentComment(Long parentId) {
+        if (parentId == null) {
+            return null;
+        }
+        return entityFinder.getComment(parentId);
     }
 
 }

@@ -73,6 +73,16 @@ public class Comment extends BaseEntity {
         this.children.add(reply);
     }
 
+    public Comment detachFromParent() {
+        if (this.parent == null) {
+            return null;
+        }
+
+        Comment parent = this.parent;
+        parent.removeChild(this);
+        return parent;
+    }
+
     public void updateComment(String newContent) {
         this.content = newContent;
     }
